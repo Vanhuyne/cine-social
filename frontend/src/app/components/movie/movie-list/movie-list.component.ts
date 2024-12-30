@@ -14,7 +14,7 @@ export class MovieListComponent {
   constructor(
     private movieService: MovieService
   ) {
-    this.movieService.getMovies().subscribe((response : MovieResponse) => {
+    this.movieService.getMoviesWithRandomPage().subscribe((response : MovieResponse) => {
       this.movies = response.content;
     })
   }

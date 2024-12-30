@@ -1,13 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Movie } from '../../../models/Movie';
 
-interface Movie {
-  id: number;
-  title: string;
-  poster: string;
-  rating: number;
-  imdbRating: number;
-  maxRating: number;
-}
 @Component({
   selector: 'app-movie-card',
   templateUrl: './movie-card.component.html',
@@ -15,16 +8,9 @@ interface Movie {
 })
 
 export class MovieCardComponent {
-  
-  movies: Movie[] = [
-    {
-      id: 1,
-      title: 'The Shawshank Redemption',
-      poster: 'assets/shawshank.jpg',
-      rating: 80,
-      imdbRating: 7,
-      maxRating: 10
-    },
-    // Add other movies...
-  ];
+ @Input() movie!: Movie;
+
+ getImageUrl(path: string): string {
+  return `https://image.tmdb.org/t/p/original${path}`;
+}
 }

@@ -9,6 +9,7 @@ import { MovieListComponent } from './components/movie/movie-list/movie-list.com
 import { MovieDetailComponent } from './components/movie/movie-detail/movie-detail.component';
 import { MovieCardComponent } from './components/movie/movie-card/movie-card.component';
 import { HttpClientModule } from '@angular/common/http';
+import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { HttpClientModule } from '@angular/common/http';
     FooterComponent,
     MovieListComponent,
     MovieDetailComponent,
-    MovieCardComponent
+    MovieCardComponent,
+    MovieGirdComponent
   ],
   imports: [
     BrowserModule,

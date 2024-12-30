@@ -3,12 +3,6 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold">What to watch this week</h2>
-      <!-- <button (click)="scrollRight()" class="flex items-center text-white hover:text-yellow-400">
-        View all
-        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button> -->
     </div>
 
     <div class="relative">
@@ -22,35 +16,7 @@
       <!-- Movie container with scroll -->
       <div #movieContainer class="flex overflow-x-auto gap-6 scroll-smooth no-scrollbar">
         <div *ngFor="let movie of movies" class="flex-none w-[calc(16.666%-1.2rem)] min-w-[200px] ">
-          <div class="relative">
-            <div class="relative pb-[150%]"> <!-- 2:3 aspect ratio = 150% -->
-              <img [src]="getImageUrl(movie.posterPath)" [alt]="movie.title"
-                class="absolute inset-0 w-full h-full object-cover rounded">
-            </div>
-
-            <div class="mt-2">
-              <h3 class="text-base py-2 h-12">{{ movie.title.length > 30 ? (movie.title | slice:0:30) + '...' : movie.title }}</h3>
-              <div class="flex space-x-2 mt-2 py-2">
-                <div class="flex items-start">
-                  <span class="text-yellow-400">⭐</span>
-                  <span class="ml-1">{{(movie.voteAverage).toFixed(1)}}</span>
-                </div>
-                <div class="flex ml-auto">
-                  <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-700">
-                    <span class="">▶</span>
-                    <span>Trailer</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <button
-              class="w-full mt-2 py-2 flex justify-center items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 rounded">
-              <span class="text-yellow-400">+</span>
-              <span>Add to watchlist</span>
-            </button>
-
-          </div>
+          <app-movie-card [movie]="movie"></app-movie-card>
         </div>
       </div>
 
@@ -63,4 +29,5 @@
       </button>
     </div>
   </div>
+  <app-movie-gird></app-movie-gird>
 </section>

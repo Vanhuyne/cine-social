@@ -19,14 +19,22 @@ public class MovieController {
     @GetMapping
     public ResponseEntity<Page<MovieDTO>>getAllMovies(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         return new ResponseEntity<>(movieServiceImpl.getAllMovies(pageable), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<MovieDTO>> searchMovies(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(movieServiceImpl.searchMovies(query, page, size), HttpStatus.OK);
+    }
     @GetMapping("/{movieId}")
     public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long movieId) {
         return new ResponseEntity<>(movieServiceImpl.getMovieById(movieId), HttpStatus.OK);
     }
+
+
 }

@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MovieResponse } from '../models/Movie';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovieService {
   private baseUrl = 'http://localhost:8081/api/movies';
+ 
   constructor(
     private http: HttpClient
   ) { }
@@ -27,5 +28,17 @@ export class MovieService {
   }
 
 
-  
+  searchMovies(query: string, page: number = 0): Observable<MovieResponse> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('page', page.toString())
+      .set('size', '10');
+    return this.http.get<MovieResponse>(`${this.baseUrl}/search`, { params });
+  }
+   
 }
+
+
+
+  
+

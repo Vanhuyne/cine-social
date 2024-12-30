@@ -10,6 +10,8 @@ import { MovieDetailComponent } from './components/movie/movie-detail/movie-deta
 import { MovieCardComponent } from './components/movie/movie-card/movie-card.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.component';
+import { SearchComponent } from './components/movie/search/search.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,12 +21,15 @@ import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.com
     MovieListComponent,
     MovieDetailComponent,
     MovieCardComponent,
-    MovieGirdComponent
+    MovieGirdComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     provideClientHydration()

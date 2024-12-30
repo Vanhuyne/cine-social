@@ -14,16 +14,24 @@ export class MovieGirdComponent {
   totalPages = 0;
   totalElements = 0;
   loading = false;
+  currentQuery: string = '';
 
-  constructor(private movieService: MovieService) {}
+  constructor(private movieService: MovieService) {
+    
+  }
 
   ngOnInit() {
-    this.loadMovies(this.currentPage);
+    this.searchMovies('');
+  }
+
+  onSearch(query: string): void {
+    this.currentQuery = query;
+    this.currentPage = 0; // Reset to the first page for a new search
+    this.searchMovies(query);
   }
 
   loadMovies(page: number) {
     this.loading = true;
-    
     this.movieService.getMovies(page).subscribe({
       next: (response: MovieResponse) => {
         this.movies = response.content;
@@ -41,7 +49,8 @@ export class MovieGirdComponent {
   }
 
   onPageChange(page: number) {
-    this.loadMovies(page - 1); // Convert to 0-based for backend
+    this.currentPage = page - 1; 
+    this.searchMovies(this.currentQuery, this.currentPage); // Convert to 0-based for backend
     const element = document.getElementById('movie-gird');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -51,4 +60,23 @@ export class MovieGirdComponent {
   getMinValue(a: number, b: number): number {
     return Math.min(a, b);
   }
+
+  searchMovies(query: string, page: number = 0): void {
+    this.loading = true;
+    this.movieService.searchMovies(query, page).subscribe({
+      next: (response: MovieResponse) => {
+        this.movies = response.content;
+        this.totalPages = response.page.totalPages;
+        this.totalElements = response.page.totalElements;
+        this.pageSize = response.page.size;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching movies:', error);
+        this.loading = false;
+      }
+    });
+  }
+  
+
 }

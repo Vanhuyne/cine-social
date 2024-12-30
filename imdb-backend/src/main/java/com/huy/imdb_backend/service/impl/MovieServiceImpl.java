@@ -2,6 +2,7 @@ package com.huy.imdb_backend.service.impl;
 
 import com.huy.imdb_backend.dto.GenreDTO;
 import com.huy.imdb_backend.dto.MovieDTO;
+import com.huy.imdb_backend.exception.ResourceNotFoundException;
 import com.huy.imdb_backend.models.Genre;
 import com.huy.imdb_backend.models.Movie;
 import com.huy.imdb_backend.repository.MovieRepo;
@@ -9,7 +10,9 @@ import com.huy.imdb_backend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -33,7 +36,14 @@ public class MovieServiceImpl implements MovieService {
     public MovieDTO getMovieById(Long movieId) {
         return movieRepo.findById(movieId)
                 .map(this::convertToMovieDTO)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
+    }
+
+    @Override
+    public Page<MovieDTO> searchMovies(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("popularity").descending());
+        Page<Movie> movies = movieRepo.searchMovies(query, pageable);
+        return movies.map(this::convertToMovieDTO);
     }
 
     private MovieDTO convertToMovieDTO(Movie movie) {

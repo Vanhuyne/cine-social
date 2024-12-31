@@ -17,7 +17,7 @@ export class MovieGirdComponent {
   currentQuery: string = '';
 
   constructor(private movieService: MovieService) {
-    
+
   }
 
   ngOnInit() {
@@ -49,7 +49,7 @@ export class MovieGirdComponent {
   }
 
   onPageChange(page: number) {
-    this.currentPage = page - 1; 
+    this.currentPage = page - 1;
     this.searchMovies(this.currentQuery, this.currentPage); // Convert to 0-based for backend
     const element = document.getElementById('movie-gird');
     if (element) {
@@ -77,6 +77,6 @@ export class MovieGirdComponent {
       }
     });
   }
-  
+
 
 }

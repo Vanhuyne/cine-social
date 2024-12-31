@@ -29,7 +29,9 @@ public class MovieController {
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return new ResponseEntity<>(movieServiceImpl.searchMovies(query, page, size), HttpStatus.OK);
+        Page<MovieDTO> movieDTOS =  movieServiceImpl.searchMovies(query, page, size);
+        movieServiceImpl.isDataCached(query, page, size);
+        return new ResponseEntity<>(movieDTOS, HttpStatus.OK);
     }
     @GetMapping("/{movieId}")
     public ResponseEntity<MovieDTO> getMovieById(@PathVariable Long movieId) {

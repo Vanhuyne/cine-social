@@ -1,70 +1,67 @@
 <section class="bg-black text-white py-8 min-h-screen">
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold" id="movie-gird">Some Movies</h2>
-      </div>
-      <div class="mb-8">
-        <app-search (search)="onSearch($event)"></app-search>  
-      </div>
-      <!-- Loading state -->
-      <div *ngIf="loading" class="flex justify-center items-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-400"></div>
-      </div>
-  
-      <!-- Movie grid -->
-      <div *ngIf="!loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        <div *ngFor="let movie of movies">
-          <app-movie-card [movie]="movie"></app-movie-card>
-        </div>
-      </div>
-  
-      <!-- Pagination -->
-      <div *ngIf="!loading && totalPages > 1" class="mt-8 flex justify-center">
-        <div class="flex space-x-2">
-          <!-- Previous page -->
-          <button 
-            (click)="onPageChange(currentPage)"
-            [disabled]="currentPage === 0"
-            [class.opacity-50]="currentPage === 0"
-            class="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 disabled:hover:bg-zinc-800">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          
-          <!-- Page numbers -->
-          <div class="flex space-x-2">
-            <!-- Buttons to display (first 3 pages, last 3 pages) -->
-            <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
-              <button 
-                
-                *ngIf="i < 2 || i === currentPage || i === currentPage - 1 || i === currentPage + 1 || i >= totalPages - 2"
-                (click)="onPageChange(i + 1)"
-                [ngClass]="{'bg-yellow-400 text-black': currentPage === i, 'bg-zinc-800': currentPage !== i}"
-                class="px-4 py-2 rounded hover:opacity-75">
-                {{ i + 1 }}
-              </button>
-              <span *ngIf="i === 3 && currentPage > 4" class="px-4 py-2">...</span>
-              <span *ngIf="i === totalPages - 4 && currentPage < totalPages - 5" class="px-4 py-2">...</span>
-            </ng-container>
-          </div>
-  
-          <!-- Next page -->
-          <button 
-            (click)="onPageChange(currentPage + 2)"
-            [disabled]="currentPage === totalPages - 1"
-            [class.opacity-50]="currentPage === totalPages - 1"
-            class="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 disabled:hover:bg-zinc-800">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-  
-      <!-- Results count -->
-      <div class="mt-4 text-center text-sm text-zinc-400">
-        Showing {{ currentPage * pageSize + 1 }} - 
-        {{ getMinValue((currentPage + 1) * pageSize, totalElements) }} 
-        of {{ totalElements }} movies
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold" id="movie-gird">Some Movies</h2>
+    </div>
+    <div class="mb-4 flex justify-center">
+      <div class="w-1/2">
+        <app-search (search)="onSearch($event)"></app-search>
       </div>
     </div>
-  </section>
+    <!-- Loading state -->
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-400"></div>
+    </div>
+
+    <!-- Movie grid -->
+    <div *ngIf="!loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      <div *ngFor="let movie of movies">
+        <app-movie-card [movie]="movie"></app-movie-card>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!loading && totalPages > 1" class="mt-8 flex justify-center">
+      <div class="flex space-x-2">
+        <!-- Previous page -->
+        <button (click)="onPageChange(currentPage)" [disabled]="currentPage === 0"
+          [class.opacity-50]="currentPage === 0"
+          class="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 disabled:hover:bg-zinc-800">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Page numbers -->
+        <div class="flex space-x-2">
+          <!-- Buttons to display (first 3 pages, last 3 pages) -->
+          <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
+            <button
+              *ngIf="i < 2 || i === currentPage || i === currentPage - 1 || i === currentPage + 1 || i >= totalPages - 2"
+              (click)="onPageChange(i + 1)"
+              [ngClass]="{'bg-yellow-400 text-black': currentPage === i, 'bg-zinc-800': currentPage !== i}"
+              class="px-4 py-2 rounded hover:opacity-75">
+              {{ i + 1 }}
+            </button>
+            <span *ngIf="i === 3 && currentPage > 4" class="px-4 py-2">...</span>
+            <span *ngIf="i === totalPages - 4 && currentPage < totalPages - 5" class="px-4 py-2">...</span>
+          </ng-container>
+        </div>
+
+        <!-- Next page -->
+        <button (click)="onPageChange(currentPage + 2)" [disabled]="currentPage === totalPages - 1"
+          [class.opacity-50]="currentPage === totalPages - 1"
+          class="px-4 py-2 bg-zinc-800 rounded hover:bg-zinc-700 disabled:hover:bg-zinc-800">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results count -->
+    <div class="mt-4 text-center text-sm text-zinc-400">
+      Showing {{ currentPage * pageSize + 1 }} -
+      {{ getMinValue((currentPage + 1) * pageSize, totalElements) }}
+      of {{ totalElements }} movies
+    </div>
+  </div>
+</section>

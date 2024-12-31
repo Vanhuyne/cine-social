@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,33 @@ public class MovieServiceImpl implements MovieService {
         return movieRepo.findById(movieId)
                 .map(this::convertToMovieDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
+
+    }
+
+    @Override
+    public MovieDTO addMovie(MovieDTO movieDTO) {
+        // check if movie already exists
+        // if exists, return error
+        Optional<Movie> existingMovie = movieRepo.findByTmdbId(movieDTO.getTmdbId());
+        if (existingMovie.isPresent()) {
+            throw new ResourceNotFoundException("Movie already exists");
+        }
+        Movie movie = convertToMovie(movieDTO);
+        return convertToMovieDTO(movieRepo.save(movie));
+    }
+
+    @Override
+    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) {
+        // check if movie exists so we can update it
+        Movie existingMovie = movieRepo.findById(movieId)
+                .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
+
+        Movie movie = convertToMovie(movieDTO);
+        return convertToMovieDTO(movieRepo.save(movie));
+    }
+
+    @Override
+    public void deleteMovie(Long movieId) {
 
     }
 

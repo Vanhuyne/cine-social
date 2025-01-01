@@ -1,17 +1,17 @@
 package com.huy.imdb_backend.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Builder
-@Data
 public class MovieDTO {
     private Long movieId;
     private String title;

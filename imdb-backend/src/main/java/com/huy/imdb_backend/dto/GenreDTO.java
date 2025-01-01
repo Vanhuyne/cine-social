@@ -1,12 +1,14 @@
 package com.huy.imdb_backend.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class GenreDTO {
     private Long genreId;
     private String name;

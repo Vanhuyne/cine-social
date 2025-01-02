@@ -20,4 +20,6 @@ public interface MovieRepo extends JpaRepository<Movie , Long> {
     Page<Movie> searchMovies(@Param("query") String query, Pageable pageable);
 
     Optional<Movie> findByTmdbId(Integer tmdbId);
+
+    Page<Movie> findAll(Pageable pageable);
 }

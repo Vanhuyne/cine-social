@@ -30,9 +30,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Page<MovieDTO> getAllMovies(Pageable pageable) {
-        return movieRepo.findAll(pageable).map(
-                this::convertToMovieDTO
-        );
+       Page<Movie> movies = movieRepo.findAll(pageable);
+       Page<MovieDTO> movieDTOS = movies.map(this::convertToMovieDTO);
+       return movieDTOS;
     }
 
     // get movie by id
@@ -91,7 +91,7 @@ public class MovieServiceImpl implements MovieService {
 
     // clear cache when new movie is added , updated or deleted
 
-    private MovieDTO convertToMovieDTO(Movie movie) {
+    public MovieDTO convertToMovieDTO(Movie movie) {
         return MovieDTO.builder()
                 .movieId(movie.getMovieId())
                 .title(movie.getTitle())

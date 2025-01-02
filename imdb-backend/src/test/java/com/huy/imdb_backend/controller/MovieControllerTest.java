@@ -2,6 +2,7 @@ package com.huy.imdb_backend.controller;
 
 import com.huy.imdb_backend.dto.GenreDTO;
 import com.huy.imdb_backend.dto.MovieDTO;
+import com.huy.imdb_backend.exception.ResourceNotFoundException;
 import com.huy.imdb_backend.service.impl.MovieServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,6 +34,7 @@ public class MovieControllerTest {
      @Autowired
      private MockMvc mockMvc;
 
+    // Mock the servic
     @MockBean
     private MovieServiceImpl movieServiceImpl;
 
@@ -70,11 +69,11 @@ public class MovieControllerTest {
         );
     }
     @Test
-    public void testSearchMoviesWithPagination() throws Exception {
+    public void testSearchMoviesWithQueryIsTEST() throws Exception {
 
         Pageable pageable = PageRequest.of(0, 10);
         List<MovieDTO> movieList = Collections.singletonList(movie);
-        Page<MovieDTO> moviePage = new PageImpl<>(movieList, pageable, 8);
+        Page<MovieDTO> moviePage = new PageImpl<>(movieList, pageable, movieList.size());
 
         // Mock the service method
         Mockito.when(movieServiceImpl.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
@@ -96,6 +95,54 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$.content[0].popularity").value(1133.345))
                 .andExpect(jsonPath("$.content[0].voteAverage").value(5.8))
                 .andExpect(jsonPath("$.content[0].voteCount").value(196));
+
+    }
+
+
+    @Test
+    // test with query "none" and page 0, size 10 reuturn empty list
+    public void testSearchMoviesWithPaginationEmptyList() throws Exception {
+
+        Pageable pageable = PageRequest.of(0, 10);
+        List<MovieDTO> movieList = Collections.emptyList();
+        Page<MovieDTO> moviePage = new PageImpl<>(movieList, pageable, movieList.size());
+
+        // Mock the service method
+        Mockito.when(movieServiceImpl.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(moviePage);
+
+        mockMvc.perform(get("/api/movies/search")
+                        .param("query", "none")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty());
+
+    }
+
+    @Test
+    public void getMovieByIdReturnMovie() throws Exception {
+        // Mock the service method
+        Mockito.when(movieServiceImpl.getMovieById(6279L))
+                .thenReturn(movie);
+
+        mockMvc.perform(get("/api/movies/6279")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.movieId").value(6279))
+                .andExpect(jsonPath("$.title").value("Kraven the Hunter"));
+
+    }
+
+    @Test
+    public void getMovieByIdReturnNotFound() throws Exception {
+        // Mock the service method
+        Mockito.when(movieServiceImpl.getMovieById(111L)).thenThrow(new ResourceNotFoundException("Movie not found"));
+
+        mockMvc.perform(get("/api/movies/111")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
 
     }
 }

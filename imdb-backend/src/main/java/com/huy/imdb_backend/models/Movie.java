@@ -47,4 +47,5 @@ public class Movie {
     private Double popularity;
     private Double voteAverage;
     private Integer voteCount;
+    private String trailerKey;
 }

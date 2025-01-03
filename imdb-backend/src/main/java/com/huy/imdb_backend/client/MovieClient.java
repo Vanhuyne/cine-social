@@ -2,6 +2,8 @@ package com.huy.imdb_backend.client;
 
 import com.huy.imdb_backend.client.mapper.GenreMapper;
 import com.huy.imdb_backend.client.response.MovieApiResponse;
+import com.huy.imdb_backend.client.response.VideoDTO;
+import com.huy.imdb_backend.client.response.VideoResponse;
 import com.huy.imdb_backend.dto.GenreDTO;
 import com.huy.imdb_backend.dto.MovieDTO;
 import com.huy.imdb_backend.exception.ResourceNotFoundException;
@@ -109,6 +111,93 @@ public class MovieClient {
                 movieRepo.save(convertToMovie(movieDTO));
             }
         });
+    }
+
+    public void updateMoviesWithRuntime (){
+        List<Movie> moviesToUpdate = movieRepo.findByRuntimeIsNull();
+        log.info("Updating {} movies with runtime", moviesToUpdate.size());
+
+        for (Movie movie : moviesToUpdate) {
+            try {
+                // Fetch movie details from TMDB
+                MovieDTO tmdbMovie = fetchMovieDetailsFromTMDB(movie.getTmdbId());
+
+                // Update movie with runtime
+                movie.setRuntime(tmdbMovie.getRuntime());
+                movieRepo.save(movie);
+
+                // Add delay to respect TMDB rate limits
+                Thread.sleep(250); // 4 requests per second
+            } catch (Exception e) {
+                log.error("Error updating movie with ID {}: {}", movie.getMovieId(), e.getMessage());
+            }
+        }
+    }
+
+    public void updateTrailerKeys() {
+        List<Movie> moviesToUpdate = movieRepo.findByTrailerKeyIsNull();
+        log.info("Updating {} movies with trailer keys", moviesToUpdate.size());
+
+        for (Movie movie : moviesToUpdate) {
+            try {
+                // Fetch movie details from TMDB
+                String trailerKey = getTrailerKey(movie.getTmdbId());
+
+                // Update movie with trailer key
+                movie.setTrailerKey(trailerKey);
+                movieRepo.save(movie);
+
+                // Add delay to respect TMDB rate limits
+                //Thread.sleep(250); // 4 requests per second
+            } catch (Exception e) {
+                log.error("Error updating movie with ID {}: {}", movie.getMovieId(), e.getMessage());
+            }
+        }
+    }
+
+    private MovieDTO fetchMovieDetailsFromTMDB(Integer tmdbId) {
+        String url = baseUrl + "/movie/" + tmdbId;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.set("accept", "application/json");
+
+        // create an HTTP entity with the headers
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<MovieDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                MovieDTO.class
+        );
+        return response.getBody();
+    }
+
+    public String getTrailerKey(Integer tmdbId) {
+        String url = baseUrl + "/movie/" + tmdbId + "/videos";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.set("accept", "application/json");
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<VideoResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                VideoResponse.class
+        );
+
+        VideoResponse videoResponse = response.getBody();
+        if (videoResponse != null && !videoResponse.getResults().isEmpty()) {
+            Optional<VideoDTO> trailer = videoResponse.getResults().stream()
+                    .filter(video -> video.getType().equals("Trailer") && video.getSite().equals("YouTube"))
+                    .findFirst();
+            log.info("Trailer found for movie with ID {}: {}", tmdbId, trailer.map(VideoDTO::getKey));
+            return trailer.map(VideoDTO::getKey).orElse("No trailer found for movie with ID " + tmdbId);
+        }
+
+        return null;
     }
 
 

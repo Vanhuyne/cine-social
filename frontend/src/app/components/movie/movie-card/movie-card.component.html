@@ -1,4 +1,4 @@
-<div class="relative">
+<div class="relative hover:cursor-pointer" *ngIf="movie" (click)="navigateToMovieDetails()">
     <div class="relative pb-[150%]">
       <img [src]="getImageUrl(movie.posterPath)" [alt]="movie.title"
         class="absolute inset-0 w-full h-full object-cover rounded">
@@ -12,7 +12,8 @@
           <span class="ml-1">{{(movie.voteAverage).toFixed(1)}}</span>
         </div>
         <div class="flex ml-auto">
-          <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-700">
+          <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-700"
+          (click)="$event.stopPropagation()">
             <span class="">▶</span>
             <span>Trailer</span>
           </button>
@@ -21,7 +22,8 @@
     </div>
 
     <button
-      class="w-full mt-2 py-2 flex justify-center items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 rounded">
+      class="w-full mt-2 py-2 flex justify-center items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 rounded"
+      (click)="$event.stopPropagation()">
       <span class="text-yellow-400">+</span>
       <span>Add to watchlist</span>
     </button>

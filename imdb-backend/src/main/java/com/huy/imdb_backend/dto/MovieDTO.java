@@ -1,6 +1,7 @@
 package com.huy.imdb_backend.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;

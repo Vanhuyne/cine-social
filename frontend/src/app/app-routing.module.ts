@@ -7,8 +7,8 @@ import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.com
 const routes: Routes = [
   { path: '', redirectTo: '/movies', pathMatch: 'full' },
   { path: 'movies', component: MovieListComponent },
-  { path: 'movies/:id', component: MovieDetailComponent},
-  { path: 'movies-gird', component: MovieGirdComponent},
+  { path: 'movie/:movieId', component: MovieDetailComponent},
+  // { path: 'movies-gird', component: MovieGirdComponent},
   { path: '**', redirectTo: '/movies' }
 ];
 

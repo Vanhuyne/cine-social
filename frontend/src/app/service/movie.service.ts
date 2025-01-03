@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MovieResponse } from '../models/Movie';
+import { Movie, MovieResponse } from '../models/Movie';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -34,6 +34,10 @@ export class MovieService {
       .set('page', page.toString())
       .set('size', '10');
     return this.http.get<MovieResponse>(`${this.baseUrl}/search`, { params });
+  }
+
+  getMovieById(movieId: number): Observable<Movie> {
+    return this.http.get<Movie>(`${this.baseUrl}/${movieId}`);
   }
    
 }

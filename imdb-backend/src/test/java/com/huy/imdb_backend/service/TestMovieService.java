@@ -1,6 +1,5 @@
 package com.huy.imdb_backend.service;
 
-import com.huy.imdb_backend.dto.GenreDTO;
 import com.huy.imdb_backend.dto.MovieDTO;
 import com.huy.imdb_backend.models.Genre;
 import com.huy.imdb_backend.models.Movie;
@@ -9,11 +8,7 @@ import com.huy.imdb_backend.service.impl.MovieServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -27,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -114,15 +108,16 @@ public class TestMovieService {
 //        verify(movieRepo, times(1)).findAll(pageable);
     }
 
-//    @Test
-//    public void getAllMoviesReturnEmptyPage() {
-//        Pageable pageable = PageRequest.of(0, 10);
-//        Page<Movie> moviePage = new PageImpl<>(Collections.emptyList());
-//
-//        when(movieRepo.findAll(pageable)).thenReturn(moviePage);
-//
-//        Page<MovieDTO> result = movieService.getAllMovies(pageable);
-//
-//        assertEquals(0, result.getTotalElements());
-//    }
+    @Test
+    public void getAllMoviesReturnEmptyPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Movie> moviePage = new PageImpl<>(Collections.emptyList());
+
+        when(movieRepo.findAll(pageable)).thenReturn(moviePage);
+
+        Page<MovieDTO> result = movieServiceImpl.getAllMovies(pageable);
+
+        assertEquals(0, result.getTotalElements());
+        assertEquals(0, result.getContent().size());
+    }
 }

@@ -14,6 +14,7 @@ export interface Movie {
     popularity: number;
     voteAverage: number;
     voteCount: number;  
+    // createdAt: string;
   }
   export interface Page {
     size: number;

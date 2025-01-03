@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Movie } from '../../../models/Movie';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-card',
@@ -8,9 +9,15 @@ import { Movie } from '../../../models/Movie';
 })
 
 export class MovieCardComponent {
- @Input() movie!: Movie;
+  @Input() movie!: Movie;
+  constructor(
+    private router: Router
+  ) { }
+  getImageUrl(path: string): string {
+    return `https://image.tmdb.org/t/p/original${path}`;
+  }
+  navigateToMovieDetails(): void {
+    this.router.navigate(['/movie', this.movie.movieId]);
+  }
 
- getImageUrl(path: string): string {
-  return `https://image.tmdb.org/t/p/original${path}`;
-}
 }

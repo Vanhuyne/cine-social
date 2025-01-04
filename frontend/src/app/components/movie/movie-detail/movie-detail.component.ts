@@ -13,7 +13,7 @@ export class MovieDetailComponent {
   movie : Movie | null = null;
   loading:  boolean = true;
   error : string = '';
-  trailerKey: string = 'QzQynLEyzKA';
+  trailerKey: string = '';
   showTrailer: boolean = false;
   safeTrailerUrl!: SafeResourceUrl;
 
@@ -33,12 +33,12 @@ export class MovieDetailComponent {
       }
     });
   }
+
   loadMovieDetails(movieId:  number): void {
     this.movieService.getMovieById(movieId).subscribe({
       next: (movie) => {
         this.movie = movie;
         console.log(movie);
-        
         this.loading = false;
       },
       error: (err) => {
@@ -51,7 +51,6 @@ export class MovieDetailComponent {
 
   getImageUrl(path: string): string {
     return `https://image.tmdb.org/t/p/original/${path}`;
-    // https://image.tmdb.org/t/p/original//zQKFPx03M9RKfEcRETXR2HoUZn1.jpg
   }
 
   formatRuntime(minutes: number): string {
@@ -60,8 +59,8 @@ export class MovieDetailComponent {
     return `${hours}h ${remainingMinutes}m`;
   }
   openTrailer(): void {
-    if (this.trailerKey) {
-      this.safeTrailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.trailerKey}?autoplay=1`);
+    if (this.movie?.trailerKey) {
+      this.safeTrailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${this.movie.trailerKey}?autoplay=1`);
       this.showTrailer = true;
     }
   }

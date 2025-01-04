@@ -105,6 +105,8 @@ public class MovieServiceImpl implements MovieService {
                 .popularity(movie.getPopularity())
                 .voteAverage(movie.getVoteAverage())
                 .voteCount(movie.getVoteCount())
+                .voteCount(movie.getVoteCount())
+                .trailerKey(movie.getTrailerKey())
                 .genres(movie.getGenres().stream().map(
                         this::convertToGenreDTO)
                         .collect(Collectors.toSet()))
@@ -124,6 +126,7 @@ public class MovieServiceImpl implements MovieService {
                 .popularity(movieDTO.getPopularity())
                 .voteAverage(movieDTO.getVoteAverage())
                 .voteCount(movieDTO.getVoteCount())
+                .trailerKey(movieDTO.getTrailerKey())
                 .genres(movieDTO.getGenres().stream().map(
                         this::convertToGenre)
                         .collect(Collectors.toSet()))

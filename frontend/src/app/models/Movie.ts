@@ -1,6 +1,5 @@
 import { Genre } from "./Genre";
 
-
 export interface Movie {
     movieId: number;
     title: string;
@@ -14,7 +13,7 @@ export interface Movie {
     popularity: number;
     voteAverage: number;
     voteCount: number;  
-    // createdAt: string;
+    trailerKey: string;
   }
   export interface Page {
     size: number;

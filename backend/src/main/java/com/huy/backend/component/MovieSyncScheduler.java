@@ -19,6 +19,6 @@ public class MovieSyncScheduler {
 //        movieClient.syncMovie();
 //        movieClient.updateMoviesWithRuntime();
         //movieClient.getTrailerKey(693134);
-        movieClient.updateTrailerKeys();
+        //movieClient.updateTrailerKeys();
     }
 }

@@ -26,4 +26,5 @@ public class MovieDTO {
     private Double popularity;
     private Double voteAverage;
     private Integer voteCount;
+    private String trailerKey;
 }

@@ -2,3 +2,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --background-color: rgb(20, 25, 29);
+  }
+  
+  body {
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  
+  /* Update MovieGrid component */
+  section.movie-grid {
+    background-color: var(--background-color);
+    min-height: 100vh;
+  }
+  
+  /* Update MovieDetail component */
+  .movie-detail {
+    background-color: var(--background-color);
+  }
+  
+  /* Update MovieCard component */
+  .movie-card {
+    background-color: var(--background-color);
+  }

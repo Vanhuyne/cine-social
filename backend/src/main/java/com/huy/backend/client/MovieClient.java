@@ -200,7 +200,6 @@ public class MovieClient {
         return null;
     }
 
-
     private Movie convertToMovie(MovieDTO movieDTO) {
         return Movie.builder()
                 .movieId(movieDTO.getMovieId())

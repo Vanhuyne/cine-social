@@ -14,4 +14,6 @@ public class AuthController {
     public String secured() {
         return "Hello, logged in user!";
     }
+
+
 }

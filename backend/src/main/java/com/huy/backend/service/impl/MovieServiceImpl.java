@@ -41,7 +41,6 @@ public class MovieServiceImpl implements MovieService {
         return movieRepo.findById(movieId)
                 .map(this::convertToMovieDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
-
     }
 
     @Override

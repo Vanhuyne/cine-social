@@ -48,7 +48,8 @@ public class MovieClient {
 
         for (int page = 1; page <= pageEnd; page++) {
             try {
-                String url = baseUrl + "/discover/movie?language=en-US&page=" + page + "&sort_by=popularity.desc";
+//                String url = baseUrl + "/discover/movie?language=en-US&page=" + page + "&sort_by=popularity.desc";
+                String url = baseUrl + "movie/top_rated?language=en-US&page=" + page;
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + token);
                 headers.set("accept", "application/json");

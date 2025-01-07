@@ -3,7 +3,6 @@ package com.huy.backend;
 import com.huy.backend.models.Genre;
 import com.huy.backend.repository.GenreRepo;
 import com.huy.backend.repository.MovieRepo;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,6 @@ public class Application implements CommandLineRunner {
 	private GenreRepo genreRepository;
 
 	public static void main(String[] args) {
-
-		Dotenv dotenv = Dotenv.configure().load();
-		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		SpringApplication.run(Application.class, args);
 	}
 

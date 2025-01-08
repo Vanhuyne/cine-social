@@ -5,6 +5,7 @@ import com.huy.backend.dto.user.LoginResponse;
 import com.huy.backend.dto.user.UserDTO;
 import com.huy.backend.dto.user.UserRegister;
 import com.huy.backend.exception.UserAlreadyExistsException;
+import com.huy.backend.models.RefreshToken;
 import com.huy.backend.models.Roles;
 import com.huy.backend.models.User;
 import com.huy.backend.repository.UserRepo;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenServiceImpl refreshTokenService;
 
     @Override
     @Transactional
@@ -66,9 +68,10 @@ public class UserServiceImpl implements UserService {
             // Set the authentication in the context
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            User user = (User) authentication.getPrincipal();
             // generate JWT token
             String accessToken = jwtUtil.generateToken(loginRequest.getUsernameOrEmail());
-            String refreshToken = jwtUtil.generateRefreshToken(loginRequest.getUsernameOrEmail());
+            String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
             return new LoginResponse("Login successful", accessToken, refreshToken);
         } catch (BadCredentialsException  e) {
             throw new BadCredentialsException("Password is incorrect");

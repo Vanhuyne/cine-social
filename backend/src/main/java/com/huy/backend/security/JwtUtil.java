@@ -19,8 +19,8 @@ import java.util.function.Function;
 public class JwtUtil {
 
     public static final String SECRET_KEY = "888888888888881111111111111111111999999999999999999997777777777777777777999999999992222";
-    private static final long ACCESS_TOKEN_VALIDITY =  // 30 days
-            1000 * 60 * 60 * 24 * 30;
+    private static final long ACCESS_TOKEN_VALIDITY =  // 1 minutes
+            60 * 1000;
     private static final long REFRESH_TOKEN_VALIDITY =  // 30 days
             1000 * 60 * 60 * 24 * 30;
     // generate token with username

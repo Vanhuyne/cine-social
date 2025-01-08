@@ -1,21 +1,21 @@
 package com.huy.backend.controller;
 
-import com.huy.backend.dto.token.RefreshTokenRequest;
+import com.huy.backend.dto.token.TokenRefreshRequest;
 import com.huy.backend.dto.token.TokenRefreshResponse;
 import com.huy.backend.dto.user.LoginRequest;
 import com.huy.backend.dto.user.LoginResponse;
 import com.huy.backend.dto.user.UserDTO;
 import com.huy.backend.dto.user.UserRegister;
+import com.huy.backend.exception.TokenRefreshException;
+import com.huy.backend.models.RefreshToken;
 import com.huy.backend.security.JwtUtil;
+import com.huy.backend.service.RefreshTokenService;
 import com.huy.backend.service.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@Valid @RequestBody UserRegister userRegister) {
@@ -47,23 +47,17 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequest request ) {
-        try {
-            String username = jwtUtil.extractUsername(request.getRefreshToken());
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtil.validateToken(request.getRefreshToken(), userDetails)) {
-                String newAccessToken = jwtUtil.generateToken(username);
-
-                return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken));
-            }
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid refresh token");
-
-        } catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Refresh token expired. Please login again");
-        }
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+        return refreshTokenService.findByToken(request.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtUtil.generateToken(user.getUsername());
+                    String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
+                    return ResponseEntity.ok(new TokenRefreshResponse(accessToken, refreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException("Refresh token not found!"));
     }
+
+
 }

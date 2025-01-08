@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -17,6 +18,5 @@ public class ErrorResponse {
     private String message;
     private String path;
 
-    @Builder.Default
-    private List<String> errors = new ArrayList<>();
+    private Map<String, String> errors;
 }

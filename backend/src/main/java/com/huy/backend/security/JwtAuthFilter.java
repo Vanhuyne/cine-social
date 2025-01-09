@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final String PREFIX_BEARER = "Bearer ";
+    private static final String ListOfAllowEndpoints[] = {
+            "/api/auth/register",
+            "/api/auth/login",
+            "/api/auth/refresh"
+    };
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        for (String endpoint : ListOfAllowEndpoints) {
+            if (request.getRequestURI().startsWith(endpoint)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -36,18 +54,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             String authHeader = request.getHeader("Authorization");
-            String token = null;
-            String username = null;
 
-            // Check if Authorization header exists and starts with "Bearer "
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7); // Remove "Bearer " prefix
-                username = jwtUtil.extractUsername(token);
+            if (authHeader == null || !authHeader.startsWith(PREFIX_BEARER)) {
+                filterChain.doFilter(request, response);
+                return;
             }
 
-            // Validate token and set security context if valid
+            String token = authHeader.substring(PREFIX_BEARER.length());
+            String username = jwtUtil.extractUsername(token);
+
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // load username of email
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.validateToken(token, userDetails)) {
@@ -56,30 +72,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             null,
                             userDetails.getAuthorities()
                     );
-
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
 
             filterChain.doFilter(request, response);
-        }catch (ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
 
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Token has expired");
-
-            response.getWriter().write(objectMapper.writeValueAsString(error));
-        }catch (JwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Invalid token");
-            error.put("message", e.getMessage());
-
-            response.getWriter().write(objectMapper.writeValueAsString(error));
+        } catch (ExpiredJwtException e) {
+            handleError(response, HttpServletResponse.SC_UNAUTHORIZED, "Token has expired", e.getMessage());
+        } catch (JwtException e) {
+            handleError(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token", e.getMessage());
+        } catch (Exception e) {
+            handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Authentication failed", e.getMessage());
         }
+    }
+
+    private void handleError(HttpServletResponse response, int status, String error, String message)
+            throws IOException {
+        response.setStatus(status);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", error);
+        errorResponse.put("message", message);
+
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

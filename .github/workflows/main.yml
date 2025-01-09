@@ -14,8 +14,10 @@ jobs:
         working-directory: ./backend
 
     steps:
-    - uses: actions/checkout@v4
-    
+     # Checkout code from repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Set up JDK 
       uses: actions/setup-java@v4
       with:
@@ -25,7 +27,7 @@ jobs:
 
       # setup MySQL  for FLYWAY
     - name: Set up MySQL
-      uses: shogo82148/actions-setup-mysql@v2
+      uses: shogo82148/actions-setup-mysql@v1
       with:
         mysql-version: '8.0'
         mysql-database: 'imdb_clone'

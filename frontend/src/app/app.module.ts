@@ -8,10 +8,13 @@ import { FooterComponent } from './components/layout/footer/footer.component';
 import { MovieListComponent } from './components/movie/movie-list/movie-list.component';
 import { MovieDetailComponent } from './components/movie/movie-detail/movie-detail.component';
 import { MovieCardComponent } from './components/movie/movie-card/movie-card.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.component';
 import { SearchComponent } from './components/movie/search/search.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './components/layout/login/login.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MovieDetailComponent,
     MovieCardComponent,
     MovieGirdComponent,
-    SearchComponent
+    SearchComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -30,8 +34,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter() {
+          return localStorage.getItem('access-token') || sessionStorage.getItem('access-token');
+        },
+      }
+    })
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     provideClientHydration()
   ],
   bootstrap: [AppComponent]

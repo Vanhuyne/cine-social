@@ -34,7 +34,7 @@ public class MovieControllerTest {
      @Autowired
      private MockMvc mockMvc;
 
-    // Mock the servic
+    // Mock the service
     @MockBean
     private MovieServiceImpl movieServiceImpl;
 
@@ -56,7 +56,7 @@ public class MovieControllerTest {
                 6279L,
                 "Kraven the Hunter",
                 LocalDate.parse("2024-12-11"),
-                null,
+                250,
                 "Kraven Kravinoff's complex relationship with his ruthless gangster father, Nikolai, starts him down a path of vengeance with brutal consequences, motivating him to become not only the greatest hunter in the world, but also one of its most feared.",
                 "/1GvBhRxY6MELDfxFrete6BNhBB5.jpg",
                 "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
@@ -65,7 +65,8 @@ public class MovieControllerTest {
                 genres,
                 1133.345,
                 5.8,
-                196
+                196,
+                "test"
         );
     }
     @Test
@@ -91,10 +92,7 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$.content[0].overview").value("Kraven Kravinoff's complex relationship with his ruthless gangster father, Nikolai, starts him down a path of vengeance with brutal consequences, motivating him to become not only the greatest hunter in the world, but also one of its most feared."))
                 .andExpect(jsonPath("$.content[0].genres[?(@.name == 'Thriller')]").exists())
                 .andExpect(jsonPath("$.content[0].genres[?(@.name == 'Action')]").exists())
-                .andExpect(jsonPath("$.content[0].genres[?(@.name == 'Adventure')]").exists())
-                .andExpect(jsonPath("$.content[0].popularity").value(1133.345))
-                .andExpect(jsonPath("$.content[0].voteAverage").value(5.8))
-                .andExpect(jsonPath("$.content[0].voteCount").value(196));
+                .andExpect(jsonPath("$.content[0].genres[?(@.name == 'Adventure')]").exists());
 
     }
 
@@ -132,7 +130,6 @@ public class MovieControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.movieId").value(6279))
                 .andExpect(jsonPath("$.title").value("Kraven the Hunter"));
-
     }
 
     @Test

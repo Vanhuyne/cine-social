@@ -59,7 +59,7 @@ public class TestMovieService {
                 6279L,
                 "Kraven the Hunter",
                 LocalDate.parse("2024-12-11"),
-                null,
+                250,
                 "Kraven Kravinoff's complex relationship with his ruthless gangster father, Nikolai, starts him down a path of vengeance with brutal consequences, motivating him to become not only the greatest hunter in the world, but also one of its most feared.",
                 "/1GvBhRxY6MELDfxFrete6BNhBB5.jpg",
                 "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
@@ -68,13 +68,14 @@ public class TestMovieService {
                 genres,
                 1133.345,
                 5.8,
-                196
+                196,
+                "test"
         );
         movie2 = new Movie(
                 6279L,
                 "Kraven the Hunter",
                 LocalDate.parse("2024-12-11"),
-                null,
+                250,
                 "Kraven Kravinoff's complex relationship with his ruthless gangster father, Nikolai, starts him down a path of vengeance with brutal consequences, motivating him to become not only the greatest hunter in the world, but also one of its most feared.",
                 "/1GvBhRxY6MELDfxFrete6BNhBB5.jpg",
                 "/v9Du2HC3hlknAvGlWhquRbeifwW.jpg",
@@ -83,7 +84,8 @@ public class TestMovieService {
                 genres,
                 1133.345,
                 5.8,
-                196
+                196,
+                "test"
         );
         pageable = PageRequest.of(0, 2);
     }

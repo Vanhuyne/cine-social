@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("api/auth/**" ).permitAll()
-//                        .requestMatchers("/api/movies/**").authenticated()
+                        .requestMatchers("/api/movies/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

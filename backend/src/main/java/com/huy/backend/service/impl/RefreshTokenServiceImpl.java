@@ -27,25 +27,26 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public RefreshToken createOrUpdateRefreshToken(User user) {
-
-        Optional<RefreshToken> existingToken = refreshTokenRepository.findByUser(user);
-        if(existingToken.isPresent()) {
-            //refreshTokenRepository.deleteByUser(user);
-            // Update existing token
-            RefreshToken refreshToken = existingToken.get();
-            refreshToken.setToken(UUID.randomUUID().toString());
-            refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-            return refreshTokenRepository.save(refreshToken);
-        }else {
-            RefreshToken refreshToken = RefreshToken.builder()
-                    .user(user)
-                    .token(UUID.randomUUID().toString())
-                    .expiryDate(Instant.now().plusMillis(refreshTokenDurationMs))
-                    .build();
-            return refreshTokenRepository.save(refreshToken);
-        }
-
+        return refreshTokenRepository.findByUser(user)
+                .map(token -> updateToken(token))
+                .orElseGet(() -> createToken(user));
     }
+
+    private RefreshToken updateToken(RefreshToken token) {
+        token.setToken(UUID.randomUUID().toString());
+        token.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        return refreshTokenRepository.save(token);
+    }
+
+    private RefreshToken createToken(User user) {
+        RefreshToken token = RefreshToken.builder()
+                .user(user)
+                .token(UUID.randomUUID().toString())
+                .expiryDate(Instant.now().plusMillis(refreshTokenDurationMs))
+                .build();
+        return refreshTokenRepository.save(token);
+    }
+
     @Override
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
@@ -54,7 +55,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+        if (token.getExpiryDate().isBefore(Instant.now())) {
             refreshTokenRepository.delete(token);
             throw new TokenRefreshException("Refresh token was expired. Please make a new signin request");
         }
@@ -66,5 +67,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void deleteByUser(User user) {
         refreshTokenRepository.deleteByUser(user);
     }
-
 }

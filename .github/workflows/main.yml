@@ -22,7 +22,22 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: 'maven'
-        
+
+      # setup MySQL  for FLYWAY
+    - name: Set up MySQL
+      uses: shogo82148/actions-setup-mysql@v2
+      with:
+        mysql-version: '8.0'
+        mysql-database: 'imdb_clone'
+        mysql-user: 'root'
+        mysql-password: '1999'
+
+    # Run Flyway migrations
+    - name: Run Flyway migrations
+      run: |
+        curl -L https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/9.22.0/flyway-commandline-9.22.0-linux-x64.tar.gz | tar xvz
+        ./flyway/flyway -url=jdbc:mysql://localhost:3306/imdb_clone -user=root -password=1999 migrate
+
     - name: Build and Test
       run: mvn -B verify
       

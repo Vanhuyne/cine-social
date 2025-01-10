@@ -4,6 +4,7 @@ import com.huy.backend.dto.user.LoginRequest;
 import com.huy.backend.dto.user.LoginResponse;
 import com.huy.backend.dto.user.UserDTO;
 import com.huy.backend.dto.user.UserRegister;
+import com.huy.backend.exception.BadRequestException;
 import com.huy.backend.exception.UserAlreadyExistsException;
 import com.huy.backend.models.RefreshToken;
 import com.huy.backend.models.Roles;
@@ -73,8 +74,8 @@ public class UserServiceImpl implements UserService {
             String accessToken = jwtUtil.generateToken(loginRequest.getUsernameOrEmail());
             String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
             return new LoginResponse("Login successful", accessToken, refreshToken);
-        } catch (BadCredentialsException  e) {
-            throw new BadCredentialsException("Password is incorrect");
+        } catch (BadCredentialsException e) {
+            throw new BadRequestException("Password is incorrect");
         }
     }
 

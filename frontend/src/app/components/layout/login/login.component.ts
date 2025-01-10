@@ -28,6 +28,7 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -38,9 +39,11 @@ export class LoginComponent {
           this.closeModal.emit();
         },
         error: (error) => {
-          console.log(error.message);
+          console.log(error);
+
           this.isLoading = false;
-          this.errorMessage = error.error.message || error.message;
+          this.errorMessage = error.error.message || 'An error occurred during login';
+
         }
       });
     } else {

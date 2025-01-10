@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +19,16 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    public static final String SECRET_KEY = "888888888888881111111111111111111999999999999999999997777777777777777777999999999992222";
-    private static final long ACCESS_TOKEN_VALIDITY =  // 1 minutes
-            60 * 1000;
-    private static final long REFRESH_TOKEN_VALIDITY =  // 30 days
-            1000 * 60 * 60 * 24 * 30;
+    @Value("${app.jwt.secret}")
+    private String SECRET_KEY ;
+
+    @Value("${app.jwt.expiration}")
+    private long ACCESS_TOKEN_VALIDITY;
+
     // generate token with username
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username, ACCESS_TOKEN_VALIDITY);
-    }
-    public String generateRefreshToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username, REFRESH_TOKEN_VALIDITY);
     }
 
     // create JWT token with claims and subject (username)

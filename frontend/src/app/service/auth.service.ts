@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { LoginRequest } from '../models/auth/LoginRequest';
 import { LoginResponse } from '../models/auth/LoginResponse';
 import { TokenRefreshResponse } from '../models/auth/TokenRefreshResponse';
@@ -14,97 +14,74 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private readonly apiUrl = 'http://localhost:8081/api/auth';
-  private readonly TOKEN_KEY = 'accessToken';
-  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
-  private readonly STORAGE_TYPE = 'localStorage'; 
+  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+  public currentUser$ = new BehaviorSubject<string | null>(this.getUsernameFromToken());
 
-  constructor(private http: HttpClient,
-    private router: Router
-  ) { }
 
-  login(value: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, value).pipe(
+  constructor(private http: HttpClient, private router: Router) {}
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: LoginResponse) => {
-        this.saveTokens(response.accessToken, response.refreshToken);
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        this.loggedIn.next(true);
+        this.currentUser$.next(this.getUsernameFromToken());
       })
     );
   }
 
-  refreshToken(refreshToken: string): Observable<TokenRefreshResponse> {
-    const request: TokenRefreshRequest = { refreshToken };
-    return this.http.post<TokenRefreshResponse>(`${this.apiUrl}/refresh`, request).pipe(
-      tap((response: TokenRefreshResponse) => {
-        this.saveAccessToken(response.accessToken);
-        // Save new refresh token if server returns it
-        if (response.refreshToken) {
-          this.saveRefreshToken(response.refreshToken);
-        }
-      })
-    );
-  }
-
-  private getStorage(): Storage {
-    return this.STORAGE_TYPE === 'localStorage' ? localStorage : sessionStorage;
-  }
-
-  private saveTokens(accessToken: string, refreshToken: string): void {
-    const storage = this.getStorage();
-    storage.setItem(this.TOKEN_KEY, accessToken);
-    storage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-  }
-
-  private saveAccessToken(accessToken: string): void {
-    this.getStorage().setItem(this.TOKEN_KEY, accessToken);
-  }
-
-  private saveRefreshToken(refreshToken: string): void {
-    this.getStorage().setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-  }
-
-  getAuthToken(): string | null {
-    return this.getStorage().getItem(this.TOKEN_KEY);
-  }
-
-  getRefreshToken(): string | null {
-    return this.getStorage().getItem(this.REFRESH_TOKEN_KEY);
-  }
-
-  isLoggedIn(): boolean {
-    const token = this.getAuthToken();
-    return !!token && !this.isTokenExpired(token);
-  }
-
-  private isTokenExpired(token: string): boolean {
-    try {
-      const decoded: any = jwtDecode(token);
-      if (!decoded.exp) return true;
-      
-      // Thêm buffer 30 giây để tránh edge cases
-      return decoded.exp * 1000 <= Date.now() + 30000;
-    } catch {
-      return true;
+  refreshToken(): Observable<TokenRefreshResponse> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      this.logout();
+      return throwError(() => new Error('Refresh token not available'));
     }
-  }
 
-  private checkTokenExpiration(): void {
-    const token = this.getAuthToken();
-    if (token && this.isTokenExpired(token)) {
-      const refreshToken = this.getRefreshToken();
-      if (!refreshToken) {
-        this.logout();
-        return;
-      }
-
-      this.refreshToken(refreshToken).subscribe({
-        error: () => this.logout()
-      });
-    }
+    return this.http
+      .post<TokenRefreshResponse>(`${this.apiUrl}/refresh`, { refreshToken })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
+          this.currentUser$.next(this.getUsernameFromToken());
+        }),
+        catchError(() => {
+          this.handleSessionExpiration();
+          return throwError(() => new Error('Failed to refresh token'));
+        })
+      );
   }
 
   logout(): void {
-    this.getStorage().clear();
-    this.router.navigate(['/movies']);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    this.loggedIn.next(false);
+    this.currentUser$.next(null);
+    this.router.navigate(['/']);
   }
 
+  isLoggedIn(): Observable<boolean> {
+    return this.loggedIn.asObservable();
+  }
+
+  private hasToken(): boolean {
+    return !!localStorage.getItem('accessToken');
+  }
+
+  private getUsernameFromToken(): string | null {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  private handleSessionExpiration(): void {
+    this.logout();
+    alert('Session has expired. Please log in again.');
+  }
 
 }

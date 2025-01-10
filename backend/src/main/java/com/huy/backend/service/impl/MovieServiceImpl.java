@@ -10,6 +10,7 @@ import com.huy.backend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,13 +30,11 @@ public class MovieServiceImpl implements MovieService {
     private final CacheManager cacheManager;
 
     @Override
+    @Cacheable(value = "moviesCache", key = "'allMovies-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<MovieDTO> getAllMovies(Pageable pageable) {
-       Page<Movie> movies = movieRepo.findAll(pageable);
-       Page<MovieDTO> movieDTOS = movies.map(this::convertToMovieDTO);
-       return movieDTOS;
+        return movieRepo.findAll(pageable).map(this::convertToMovieDTO);
     }
 
-    // get movie by id
     @Override
     public MovieDTO getMovieById(Long movieId) {
         return movieRepo.findById(movieId)
@@ -44,48 +43,34 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @CacheEvict(value = "moviesCache", allEntries = true)
     public MovieDTO addMovie(MovieDTO movieDTO) {
-        // check if movie already exists
-        // if exists, return error
-        Optional<Movie> existingMovie = movieRepo.findByTmdbId(movieDTO.getTmdbId());
-        if (existingMovie.isPresent()) {
+        if (movieRepo.findByTmdbId(movieDTO.getTmdbId()).isPresent()) {
             throw new ResourceNotFoundException("Movie already exists");
         }
-        Movie movie = convertToMovie(movieDTO);
-        return convertToMovieDTO(movieRepo.save(movie));
+        return convertToMovieDTO(movieRepo.save(convertToMovie(movieDTO)));
     }
 
     @Override
+    @CacheEvict(value = "moviesCache", allEntries = true)
     public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) {
-        // check if movie exists so we can update it
-        Movie existingMovie = movieRepo.findById(movieId)
+        movieRepo.findById(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
-
-        Movie movie = convertToMovie(movieDTO);
-        return convertToMovieDTO(movieRepo.save(movie));
+        return convertToMovieDTO(movieRepo.save(convertToMovie(movieDTO)));
     }
 
     @Override
+    @CacheEvict(value = "moviesCache", allEntries = true)
     public void deleteMovie(Long movieId) {
-
+        movieRepo.deleteById(movieId);
     }
 
     @Override
-    @Cacheable(value = "moviesCache",
-                key = "#query + '-' + #page + '-' + #size")
+    @Cacheable(value = "moviesCache", key = "#query + '-' + #page + '-' + #size")
     public Page<MovieDTO> searchMovies(String query, int page, int size) {
         log.info("Caching search results for query: {}, page: {}, size: {}", query, page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("popularity").descending());
-        Page<Movie> movies = movieRepo.searchMovies(query, pageable);
-        return movies.map(this::convertToMovieDTO);
-    }
-
-    public boolean isDataCached(String query, int page, int size) {
-        String cacheKey = query + '-' + page + '-' + size;
-        log.info("Checking if data is cached for key: {}", cacheKey);
-        boolean isCached = cacheManager.getCache("moviesCache").get(cacheKey) != null;
-        log.info("Data cached for key {}: {}", cacheKey, isCached);
-        return isCached;
+        return movieRepo.searchMovies(query, pageable).map(this::convertToMovieDTO);
     }
 
     // clear cache when new movie is added , updated or deleted

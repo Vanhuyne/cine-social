@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './components/layout/login/login.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
+import { ClickOutsideDirectiveDirective } from './directive/click-outside-directive.directive';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
     MovieCardComponent,
     MovieGirdComponent,
     SearchComponent,
-    LoginComponent
+    LoginComponent,
+    ClickOutsideDirectiveDirective
   ],
   imports: [
     BrowserModule,

@@ -6,6 +6,7 @@ import com.huy.backend.models.User;
 import com.huy.backend.repository.RefreshTokenRepo;
 import com.huy.backend.repository.UserRepo;
 import com.huy.backend.service.RefreshTokenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -60,6 +61,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     // Optional: Periodic cleanup of expired tokens
     @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // Run once a day
+    @Transactional
     public void removeExpiredTokens() {
         refreshTokenRepository.deleteByExpiryDateBefore(Instant.now());
     }

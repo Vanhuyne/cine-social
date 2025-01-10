@@ -38,12 +38,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
             LoginResponse loginResponse = userService.login(loginRequest);
             return ResponseEntity.ok(loginResponse);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+
     }
 
     @PostMapping("/refresh")

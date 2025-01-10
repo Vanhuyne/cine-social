@@ -38,8 +38,9 @@ export class LoginComponent {
           this.closeModal.emit();
         },
         error: (error) => {
+          console.log(error.message);
           this.isLoading = false;
-          this.errorMessage = error.error.message || 'An error occurred during login';
+          this.errorMessage = error.error.message || error.message;
         }
       });
     } else {

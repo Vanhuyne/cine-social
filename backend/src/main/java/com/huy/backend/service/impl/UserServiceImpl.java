@@ -1,12 +1,7 @@
 package com.huy.backend.service.impl;
 
-import com.huy.backend.dto.user.LoginRequest;
-import com.huy.backend.dto.user.LoginResponse;
-import com.huy.backend.dto.user.UserDTO;
-import com.huy.backend.dto.user.UserRegister;
-import com.huy.backend.exception.BadRequestException;
+import com.huy.backend.dto.user.*;
 import com.huy.backend.exception.UserAlreadyExistsException;
-import com.huy.backend.models.RefreshToken;
 import com.huy.backend.models.Roles;
 import com.huy.backend.models.User;
 import com.huy.backend.repository.UserRepo;
@@ -37,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO register(UserRegister userRegister) {
+    public UserRegistrationResponseDTO register(UserRegister userRegister) {
         // Check if username or email already exists
         if (userRepository.existsByUsername(userRegister.getUsername())) {
             throw new UserAlreadyExistsException("Username already exists");
@@ -50,7 +45,7 @@ public class UserServiceImpl implements UserService {
         User user = mapRegisterToUser(userRegister);
         User savedUser = userRepository.save(user);
 
-        return mapUserToDTO(savedUser);
+        return mapUserToResponseDTO(savedUser);
     }
 
     @Override
@@ -75,10 +70,9 @@ public class UserServiceImpl implements UserService {
             String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
             return new LoginResponse("Login successful", accessToken, refreshToken);
         } catch (BadCredentialsException e) {
-            throw new BadRequestException("Password is incorrect");
+            throw new BadCredentialsException("Password is incorrect");
         }
     }
-
 
     private User mapRegisterToUser(UserRegister userRegister) {
         return User.builder()
@@ -91,14 +85,22 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private UserDTO mapUserToDTO(User user) {
-        return UserDTO.builder()
+    private UserProfileDTO mapUserToDTO(User user) {
+        return UserProfileDTO.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .profilePicture(user.getProfilePicture())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
+    private UserRegistrationResponseDTO mapUserToResponseDTO(User user) {
+        return UserRegistrationResponseDTO.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .build();
     }
 }

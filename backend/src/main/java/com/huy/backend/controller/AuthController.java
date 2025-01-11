@@ -2,10 +2,7 @@ package com.huy.backend.controller;
 
 import com.huy.backend.dto.token.TokenRefreshRequest;
 import com.huy.backend.dto.token.TokenRefreshResponse;
-import com.huy.backend.dto.user.LoginRequest;
-import com.huy.backend.dto.user.LoginResponse;
-import com.huy.backend.dto.user.UserDTO;
-import com.huy.backend.dto.user.UserRegister;
+import com.huy.backend.dto.user.*;
 import com.huy.backend.exception.TokenRefreshException;
 import com.huy.backend.models.RefreshToken;
 import com.huy.backend.security.JwtUtil;
@@ -15,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +27,9 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody UserRegister userRegister) {
-        UserDTO userDTO = userService.register(userRegister);
-        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        public ResponseEntity<UserRegistrationResponseDTO> register(@Valid @RequestBody UserRegister userRegister) {
+        UserRegistrationResponseDTO userDTO = userService.register(userRegister);
+            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

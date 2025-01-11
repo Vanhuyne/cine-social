@@ -6,10 +6,11 @@ import { AuthService } from '../../../service/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   @Output() closeModal = new EventEmitter<void>();
+  @Output() openRegister = new EventEmitter<void>();
 
   loginForm! : FormGroup;
   isLoading = false;
@@ -65,5 +66,9 @@ export class LoginComponent {
 
   onClose(): void {
     this.closeModal.emit();
+  }
+
+  openRegisterForm() {
+    this.openRegister.emit();
   }
 }

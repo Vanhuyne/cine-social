@@ -4,7 +4,7 @@
       <!-- Logo -->
       <div class="flex-shrink-0">
         <a href="/" class="flex items-center">
-          <img src="assets/logo/logo-imdb.png" alt="IMDb" class="w-full h-14">
+          <img src="assets/logo/logo.png" alt="IMDb" class="w-full h-14">
         </a>
       </div>
       
@@ -35,13 +35,12 @@
           <div class="relative inline-block text-left">
             <button 
               type="button"
-              (click)="toggleDropdown()"
+              (click)="toggleDropdown($event)"
               class="flex items-center space-x-2 text-white focus:outline-none"
             >
               <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                 <span class="text-sm">{{ (authService.currentUser$ | async)?.charAt(0) }}</span>
               </div>
-              <!-- <span class="text-sm font-medium">{{ authService.currentUser$ | async }}</span> -->
               <svg 
                 [class.rotate-180]="isDropdownOpen"
                 class="h-4 w-4 transition-transform duration-200"
@@ -56,9 +55,9 @@
             <!-- Dropdown Menu -->
             <div 
               *ngIf="isDropdownOpen"
-              class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20"
+              class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20 dropdown-menu"
               role="menu"
-              (clickOutside)="closeDropdown()"
+              (click)="closeDropdown()"
             >
               <div class="py-1" role="none">
                 <a 
@@ -71,7 +70,7 @@
                   </svg>
                   Profile
                 </a>
-                <a 
+                <!-- <a 
                   href="/watchlist"
                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   role="menuitem"
@@ -80,7 +79,7 @@
                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                   </svg>
                   Watchlist
-                </a>
+                </a> -->
                 <button
                   (click)="logout()"
                   class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -101,6 +100,14 @@
   
   <app-login
     *ngIf="showLoginModal"
-    (closeModal)="showLoginModal = false">
+    (closeModal)="closeLoginModal()"
+    (openRegister)="switchToRegister()">
   </app-login>
+
+  <app-register
+    *ngIf="showRegisterModal"
+    (closeModal)="closeRegisterModal()"
+    (openLogin)="switchToLogin()">
+  ></app-register>
+    
 </header>

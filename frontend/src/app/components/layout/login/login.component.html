@@ -94,7 +94,7 @@
             <label class="flex items-center">
               <input type="checkbox" 
                      formControlName="rememberMe"
-                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"/>
+                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 "/>
               <span class="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
           </div>
@@ -117,7 +117,7 @@
           <div class="mt-4 text-center text-sm text-gray-600">
             <a href="#" class="text-blue-600 hover:text-blue-700">Forgot Password?</a>
             <span class="mx-2">|</span>
-            <a href="#" class="text-blue-600 hover:text-blue-700">Register</a>
+            <a  (click)="onClose(); openRegisterForm()" class="text-blue-600 hover:text-blue-700 hover:cursor-pointer">Register</a>
           </div>
         </form>
       </div>

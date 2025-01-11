@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class UserRegister {
+public class  UserRegister {
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;

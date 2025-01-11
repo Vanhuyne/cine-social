@@ -8,6 +8,8 @@ import { TokenRefreshResponse } from '../models/auth/TokenRefreshResponse';
 import { TokenRefreshRequest } from '../models/auth/TokenRefreshRequest';
 import { jwtDecode  } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { RegisterRequest } from '../models/auth/RegisterRequest';
+import { RegisterResponse } from '../models/auth/RegisterResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,10 @@ export class AuthService {
         this.currentUser$.next(this.getUsernameFromToken());
       })
     );
+  }
+
+  register(userRegister: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, userRegister);
   }
 
   refreshToken(): Observable<TokenRefreshResponse> {

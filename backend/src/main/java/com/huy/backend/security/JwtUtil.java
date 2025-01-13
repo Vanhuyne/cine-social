@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -26,8 +24,9 @@ public class JwtUtil {
     private long ACCESS_TOKEN_VALIDITY;
 
     // generate token with username
-    public String generateToken(String username) {
+    public String generateToken(String username, Set<String> roles) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", roles);
         return createToken(claims, username, ACCESS_TOKEN_VALIDITY);
     }
 
@@ -83,13 +82,21 @@ public class JwtUtil {
             final String usernameOrEmail = extractUsername(token);
             // Check if the username or email in the token matches the username in the user details and if the token is not expired
             User user = (User) userDetails;
+            Set<String> roles = extractRoles(token);
             return (usernameOrEmail.equals(user.getUsername()) || usernameOrEmail.equals(user.getEmail()))
-                    && !isTokenExpired(token);
+                    && !isTokenExpired(token) && roles.containsAll(user.getRoles());
         } catch (ExpiredJwtException e) {
             throw e;
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    // extract roles from token
+    public Set<String> extractRoles(String token) {
+        extractAllClaims(token);
+        return extractClaim(token, claims ->
+                new HashSet<>(claims.get("roles", List.class)));
     }
 
 

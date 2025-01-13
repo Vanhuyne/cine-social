@@ -66,13 +66,21 @@ public class UserServiceImpl implements UserService {
 
             User user = (User) authentication.getPrincipal();
             // generate JWT token
-            String accessToken = jwtUtil.generateToken(loginRequest.getUsernameOrEmail());
+            String accessToken = jwtUtil.generateToken(user.getUsername(), user.getRoles());
             String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
             return new LoginResponse("Login successful", accessToken, refreshToken);
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Password is incorrect");
         }
     }
+
+    @Override
+    public UserProfileDTO getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        return mapUserToDTO(user);
+    }
+
 
     private User mapRegisterToUser(UserRegister userRegister) {
         return User.builder()

@@ -45,11 +45,17 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String accessToken = jwtUtil.generateToken(user.getUsername());
+                    String accessToken = jwtUtil.generateToken(user.getUsername(), user.getRoles());
                     String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
                     return ResponseEntity.ok(new TokenRefreshResponse(accessToken, refreshToken));
                 })
                 .orElseThrow(() -> new TokenRefreshException("Refresh token not found!"));
+    }
+
+    // get current user
+    @PostMapping("/current-user")
+    public ResponseEntity<UserProfileDTO> getCurrentUser() {
+        return ResponseEntity.ok(userService.getCurrentUser());
     }
 
 

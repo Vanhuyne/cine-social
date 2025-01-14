@@ -1,7 +1,7 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../service/auth.service';
-import { Subscription } from 'rxjs';
+import {  map, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -9,6 +9,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnDestroy {
+  isLoggedIn$ = this.authService.isLoggedIn();
+  isAdmin$ = this.authService.getUserRoles().pipe(
+    map(roles => roles.includes('ROLE_ADMIN'))
+  );
   showLoginModal = false;
   showRegisterModal = false;
   
@@ -20,7 +24,7 @@ export class HeaderComponent implements OnDestroy {
     private router: Router,
     public authService: AuthService
   ) {
-    this.authSubscription = this.authService.currentUser$.subscribe(user => {
+    this.authSubscription = this.authService.getCurrentUser().subscribe((user) => {
       if (!user) {
         this.showLoginModal = false;
         this.isDropdownOpen = false;

@@ -16,6 +16,7 @@ import { LoginComponent } from './components/layout/login/login.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
 import { RegisterComponent } from './components/layout/register/register.component';
+import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-dashbard.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { RegisterComponent } from './components/layout/register/register.compone
     SearchComponent,
     LoginComponent,
     RegisterComponent,
+    AdminDashbardComponent,
   ],
   imports: [
     BrowserModule,

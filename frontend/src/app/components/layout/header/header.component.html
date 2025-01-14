@@ -23,7 +23,7 @@
         </a>
         
         <!-- Login/User Menu -->
-        <ng-container *ngIf="!(authService.currentUser$ | async); else userMenu">
+        <ng-container *ngIf="!(authService.getCurrentUser() | async); else userMenu">
           <button 
             class="bg-yellow-400 text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-yellow-500"
             (click)="showLoginModal = true">
@@ -39,7 +39,7 @@
               class="flex items-center space-x-2 text-white focus:outline-none"
             >
               <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                <span class="text-sm">{{ (authService.currentUser$ | async)?.charAt(0) }}</span>
+                <span class="text-sm">{{ (authService.getCurrentUser() | async)?.charAt(0) }}</span>
               </div>
               <svg 
                 [class.rotate-180]="isDropdownOpen"
@@ -80,6 +80,12 @@
                   </svg>
                   Watchlist
                 </a> -->
+                <button *ngIf="isAdmin$ | async" 
+                class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+                routerLink="/admin-dashbard">
+                  Admin Dashboard
+                </button>
                 <button
                   (click)="logout()"
                   class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

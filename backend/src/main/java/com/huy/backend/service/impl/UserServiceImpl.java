@@ -74,12 +74,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // permission role for user
+//    public void permissionRoleForUser(User user, String role) {
+//        user.setRoles(Collections.singleton(role));
+//        userRepository.save(user);
+//    }
+
     @Override
     public UserProfileDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         return mapUserToDTO(user);
     }
+
 
 
     private User mapRegisterToUser(UserRegister userRegister) {

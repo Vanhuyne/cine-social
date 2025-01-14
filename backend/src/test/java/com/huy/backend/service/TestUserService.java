@@ -15,17 +15,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -115,27 +113,43 @@ public class TestUserService {
         });
     }
 
-//    @Test
-//    void login_ShouldReturnLoginResponse_WhenCredentialsAreCorrect() {
-//        // Given
-//        User user = new User();
-//        when(userRepo.findByUsernameOrEmail("testUsername")).thenReturn(Optional.of(user));
-//        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-//                .thenReturn(new UsernamePasswordAuthenticationToken(user, "testPassword", Collections.emptyList()));
-//        when(jwtUtil.generateToken(anyString(), anySet())).thenReturn("accessToken");
-//        when(refreshTokenService.createOrUpdateRefreshToken(any(User.class))).thenReturn(new RefreshToken(1L, user, "refreshToken", Instant.now()));
-//
-//        // Action
-//        LoginResponse response = userService.login(new LoginRequest("testUsername", "testPassword"));
-//        System.out.println("accessToken " + response.getAccessToken());
-//        System.out.println("refreshToken " + response.getRefreshToken());
-//        System.out.println("message " + response.getMessage());
-//
-//
-//        // Assert
-//        assertNotNull(response);
-//        assertEquals("Login successful", response.getMessage());
-//        assertEquals("accessToken", response.getAccessToken());
-//        assertEquals("refreshToken", response.getRefreshToken());
-//    }
+    @Test
+    void login_ShouldReturnLoginResponse_WhenCredentialsAreCorrect() {
+        // Given
+        User user = new User();
+        user.setUsername("testUsername");
+        user.setRoles(Set.of("ROLE_USER"));
+        when(userRepo.findByUsernameOrEmail("testUsername")).thenReturn(Optional.of(user));
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(new UsernamePasswordAuthenticationToken(user, "testPassword", Collections.emptyList()));
+        when(jwtUtil.generateToken(user.getUsername(), user.getRoles())).thenReturn("accessToken");
+        when(refreshTokenService.createOrUpdateRefreshToken(any(User.class))).thenReturn(new RefreshToken(1L, user, "refreshToken", Instant.now()));
+
+        // Action
+        LoginResponse response = userService.login(new LoginRequest("testUsername", "testPassword"));
+
+        // Assert
+        assertNotNull(response);
+        assertEquals("Login successful", response.getMessage());
+        assertEquals("accessToken", response.getAccessToken());
+        assertEquals("refreshToken", response.getRefreshToken());
+    }
+
+    @Test
+    void login_ShouldThrowBadCredentialsException_WhenPasswordIsIncorrect() {
+        // Given
+        User user = new User();
+        user.setUsername("testUsername");
+        user.setRoles(Set.of("ROLE_USER"));
+
+        when(userRepo.findByUsernameOrEmail(user.getUsername())).thenReturn(Optional.of(user));
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Password is incorrect"));
+
+        // Assert
+        assertThrows(BadCredentialsException.class, () -> {
+            // Action
+            userService.login(new LoginRequest("testUsername", "testPassword"));
+        });
+    }
 }

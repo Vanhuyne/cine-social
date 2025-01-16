@@ -6,7 +6,7 @@ import { LoginRequest } from '../models/auth/LoginRequest';
 import { LoginResponse } from '../models/auth/LoginResponse';
 import { TokenRefreshResponse } from '../models/auth/TokenRefreshResponse';
 import { TokenRefreshRequest } from '../models/auth/TokenRefreshRequest';
-import { jwtDecode  } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../models/auth/RegisterRequest';
 import { RegisterResponse } from '../models/auth/RegisterResponse';
@@ -27,16 +27,14 @@ export class AuthService {
   private currentUser$ = new BehaviorSubject<string | null>(this.getUsernameFromToken());
   private userRoles$ = new BehaviorSubject<string[]>(this.getUserRolesFromToken());
 
-
-
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: LoginResponse) => {
         // Store tokens and update state
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
-        
+
         // Update logged in state and user information
         this.loggedIn.next(true);
         this.currentUser$.next(this.getUsernameFromToken());
@@ -71,7 +69,7 @@ export class AuthService {
         catchError(() => {
           this.handleSessionExpiration();
           return throwError(() => new Error('Failed to refresh token'));
-        })      );
+        }));
   }
 
   logout(): void {
@@ -81,7 +79,6 @@ export class AuthService {
     this.loggedIn.next(false);
     this.currentUser$.next(null);
     this.userRoles$.next([]);
-
     this.router.navigate(['/']);
   }
 
@@ -98,12 +95,12 @@ export class AuthService {
   private hasValidToken(): boolean {
     const token = localStorage.getItem('accessToken');
     if (!token) return false;
-    try{
+    try {
       const decodedToken = jwtDecode<DecodedToken>(token);
       const currentTime = Math.floor(Date.now() / 1000);
       return decodedToken.exp > currentTime;
-      
-    }catch(e){
+
+    } catch (e) {
       return false;
     }
   }

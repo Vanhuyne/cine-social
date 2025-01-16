@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MovieWatchListDetailDTO {
+public class MovieWatchListDTO {
     private Long movieId;
     private String title;
     private String posterPath;

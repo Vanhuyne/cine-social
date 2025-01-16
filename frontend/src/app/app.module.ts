@@ -17,6 +17,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './interceptor/auth-interceptor.interceptor';
 import { RegisterComponent } from './components/layout/register/register.component';
 import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-dashbard.component';
+import { UnauthorizedComponentComponent } from './components/unauthorized-component/unauthorized-component.component';
+import { WatchListComponent } from './components/watch-list/watch-list.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-
     LoginComponent,
     RegisterComponent,
     AdminDashbardComponent,
+    UnauthorizedComponentComponent,
+    WatchListComponent,
   ],
   imports: [
     BrowserModule,

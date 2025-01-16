@@ -39,7 +39,7 @@ public class SecurityConfig {
                 csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("api/auth/**" , "api/watchlist/**").permitAll()
+                        .requestMatchers("api/auth/**" ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
                         .anyRequest().authenticated()
                 )

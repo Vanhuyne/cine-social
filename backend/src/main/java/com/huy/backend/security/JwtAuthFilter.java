@@ -15,12 +15,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -31,29 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // List of endpoints that do not require authentication
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-
     private static final String PREFIX_BEARER = "Bearer ";
-    private static final List<String> ALLOWED_ENDPOINTS = List.of(
-            "/api/auth/register",
-            "/api/auth/login",
-            "/api/auth/refresh"
-//            "/api/movies/**"
-    );
-
-
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        for (String endpoint : ALLOWED_ENDPOINTS) {
-            if (PATH_MATCHER.match(endpoint, requestURI)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     protected void doFilterInternal(

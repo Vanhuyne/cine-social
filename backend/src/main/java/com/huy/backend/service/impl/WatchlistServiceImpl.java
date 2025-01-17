@@ -11,6 +11,7 @@ import com.huy.backend.models.Watchlist;
 import com.huy.backend.repository.MovieRepo;
 import com.huy.backend.repository.UserRepo;
 import com.huy.backend.repository.WatchListRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -79,6 +80,29 @@ public class WatchlistServiceImpl {
                 .map(this::mapToWatchlistDTO)
                 .collect(Collectors.toList());
     }
+
+    // remove movie from watchlist
+    public void removeMovieFromWatchlist(Long watchlistId, Long movieId) {
+        Watchlist watchlist = watchlistRepository.findById(watchlistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Watchlist not found"));
+
+        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
+
+        if (!watchlist.getMovies().contains(movie)) {
+            throw new BadRequestException("Movie does not exist in watchlist");
+        }
+
+        watchlist.getMovies().remove(movie);
+        watchlistRepository.save(watchlist);
+    }
+
+    @Transactional
+    public void deleteWatchlist(Long watchlistId) {
+        Watchlist watchlist = watchlistRepository.findById(watchlistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Watchlist not found"));
+        watchlistRepository.delete(watchlist);
+    }
+
     private WatchlistDTO mapToWatchlistDTO(Watchlist watchlist) {
         return WatchlistDTO.builder()
                 .watchlistId(watchlist.getWatchlistId())

@@ -39,4 +39,18 @@ public class WatchListController {
         WatchlistDetailDTO watchlistDetailDTO = watchListService.createWatchlist(userId, name);
         return new ResponseEntity<>(watchlistDetailDTO, HttpStatus.CREATED);
     }
+
+    // remove movie from watchlist
+    @DeleteMapping("/{watchListId}/movie/{movieId}")
+    public ResponseEntity<Void> removeMovieFromWatchlist(@PathVariable Long watchListId, @PathVariable Long movieId){
+        watchListService.removeMovieFromWatchlist(watchListId, movieId);
+        return ResponseEntity.ok().build();
+    }
+
+    // delete watchlist
+    @DeleteMapping("/{watchListId}")
+    public ResponseEntity<Void> deleteWatchlist(@PathVariable Long watchListId){
+        watchListService.deleteWatchlist(watchListId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -50,14 +50,16 @@ public class WatchlistServiceImpl {
         watchlistRepository.save(watchlist);
     }
 
-    public WatchlistDetailDTO createWatchlist(Long userId, String name) {
-        User user = userRepository.findById(userId)
+    public WatchlistDetailDTO createWatchlist(String name) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        User existUser = userRepository.findById(user.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
 
         Watchlist watchlist = Watchlist.builder()
                 .name(name)
-                .user(user)
+                .user(existUser)
                 .movies(new ArrayList<>())
                 .createdAt(LocalDateTime.now())
                 .build();

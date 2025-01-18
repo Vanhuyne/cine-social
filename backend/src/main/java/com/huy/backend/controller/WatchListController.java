@@ -35,8 +35,8 @@ public class WatchListController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<WatchlistDetailDTO> createWatchList(@RequestParam Long userId , @RequestParam String name){
-        WatchlistDetailDTO watchlistDetailDTO = watchListService.createWatchlist(userId, name);
+    public ResponseEntity<WatchlistDetailDTO> createWatchList(@RequestParam String name){
+        WatchlistDetailDTO watchlistDetailDTO = watchListService.createWatchlist(name);
         return new ResponseEntity<>(watchlistDetailDTO, HttpStatus.CREATED);
     }
 

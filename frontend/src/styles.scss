@@ -4,28 +4,37 @@
 @tailwind utilities;
 
 :root {
-    --background-color: rgb(20, 25, 29);
-  }
+    --background-color: #FBF5DD;
+    --background-header-footer: rgb(20, 25, 29);
+}
   
-  body {
+body {
     background-color: var(--background-color);
     margin: 0;
     padding: 0;
     min-height: 100vh;
-  }
+}
+
+header {
+    background-color: var(--background-header-footer)
+}
+
+footer {
+    background-color: var(--background-header-footer)
+}
   
-  /* Update MovieGrid component */
-  section.movie-grid {
+/* Update MovieGrid component */
+section.movie-grid {
     background-color: var(--background-color);
     min-height: 100vh;
-  }
+}
   
-  /* Update MovieDetail component */
-  .movie-detail {
+/* Update MovieDetail component */
+.movie-detail {
     background-color: var(--background-color);
-  }
+}
   
-  /* Update MovieCard component */
-  .movie-card {
+/* Update MovieCard component */
+.movie-card {
     background-color: var(--background-color);
-  }
+}

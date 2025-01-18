@@ -29,8 +29,6 @@ public class WatchlistServiceImpl {
     private final WatchListRepo watchlistRepository;
     private final UserRepo userRepository;
     private final MovieRepo movieRepository;
-    private final AuthenticationManager authenticationManager;
-
     public void addMovieToWatchlist(Long watchListId , Long userId, Long movieId) {
         Watchlist watchlist = watchlistRepository.findById(watchListId)
                 .orElseThrow(() -> new ResourceNotFoundException("Watchlist not found"));
@@ -55,7 +53,6 @@ public class WatchlistServiceImpl {
         User user = (User) authentication.getPrincipal();
         User existUser = userRepository.findById(user.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
 
         Watchlist watchlist = Watchlist.builder()
                 .name(name)

@@ -1,7 +1,22 @@
-<div class="relative hover:cursor-pointer  " *ngIf="movie" (click)="navigateToMovieDetails()">
+<div class="relative hover:cursor-pointer" *ngIf="movie" (click)="navigateToMovieDetails()">
   <div class="relative pb-[150%] border-2 hover:border-cyan-500 inset-0 rounded-sm duration-200">
     <img [src]="getImageUrl(movie.posterPath)" [alt]="movie.title"
       class="absolute inset-0 w-full h-full object-cover rounded-sm">
+    
+    <!-- Watchlist Button -->
+    <button 
+      (click)="toggleWatchlist($event)"
+      class="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-75 transition-all duration-200"
+      [class.text-yellow-500]="isInWatchlist"
+      [class.text-white]="!isInWatchlist"
+      title="{{ isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist' }}"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
+           [class.fill-current]="isInWatchlist"
+           [class.animate-pulse]="isInWatchlist">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+      </svg>
+    </button>
   </div>
 
   <div class="mt-2">

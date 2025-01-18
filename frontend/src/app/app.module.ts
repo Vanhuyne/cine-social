@@ -42,13 +42,13 @@ import { WatchListComponent } from './components/watch-list/watch-list.component
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter() {
-          return localStorage.getItem('access-token') || sessionStorage.getItem('access-token');
-        },
-      }
-    })
+    // JwtModule.forRoot({
+    //   config: {
+    //     tokenGetter() {
+    //       return localStorage.getItem('access-token') || sessionStorage.getItem('access-token');
+    //     },
+    //   }
+    // })
   ],
   providers: [
     {

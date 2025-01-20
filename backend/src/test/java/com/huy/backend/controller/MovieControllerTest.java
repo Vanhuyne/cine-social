@@ -3,7 +3,7 @@ package com.huy.backend.controller;
 import com.huy.backend.dto.GenreDTO;
 import com.huy.backend.dto.MovieDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
-import com.huy.backend.service.impl.MovieServiceImpl;
+import com.huy.backend.service.MovieService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,7 +36,7 @@ public class MovieControllerTest {
 
     // Mock the service
     @MockBean
-    private MovieServiceImpl movieServiceImpl;
+    private MovieService movieService;
 
     private MovieDTO movie;
 
@@ -77,7 +77,7 @@ public class MovieControllerTest {
         Page<MovieDTO> moviePage = new PageImpl<>(movieList, pageable, movieList.size());
 
         // Mock the service method
-        Mockito.when(movieServiceImpl.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+        Mockito.when(movieService.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(moviePage);
 
         mockMvc.perform(get("/api/movies/search")
@@ -106,7 +106,7 @@ public class MovieControllerTest {
         Page<MovieDTO> moviePage = new PageImpl<>(movieList, pageable, movieList.size());
 
         // Mock the service method
-        Mockito.when(movieServiceImpl.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+        Mockito.when(movieService.searchMovies(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(moviePage);
 
         mockMvc.perform(get("/api/movies/search")
@@ -122,7 +122,7 @@ public class MovieControllerTest {
     @Test
     public void getMovieByIdReturnMovie() throws Exception {
         // Mock the service method
-        Mockito.when(movieServiceImpl.getMovieById(6279L))
+        Mockito.when(movieService.getMovieById(6279L))
                 .thenReturn(movie);
 
         mockMvc.perform(get("/api/movies/6279")
@@ -135,7 +135,7 @@ public class MovieControllerTest {
     @Test
     public void getMovieByIdReturnNotFound() throws Exception {
         // Mock the service method
-        Mockito.when(movieServiceImpl.getMovieById(111L)).thenThrow(new ResourceNotFoundException("Movie not found"));
+        Mockito.when(movieService.getMovieById(111L)).thenThrow(new ResourceNotFoundException("Movie not found"));
 
         mockMvc.perform(get("/api/movies/111")
                         .contentType(MediaType.APPLICATION_JSON))

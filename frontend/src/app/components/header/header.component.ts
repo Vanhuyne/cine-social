@@ -1,6 +1,6 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import {  map, Observable, Subscription } from 'rxjs';
 
 @Component({

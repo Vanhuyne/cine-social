@@ -17,9 +17,8 @@ public class MovieSyncScheduler {
     @Scheduled(fixedRate = 10 * 24 * 60 * 60 * 1000) // 10 days in milliseconds
     public void synchronizeFetchMovies() {
 //        movieClient.syncMovie();
-
 //        movieClient.updateMoviesWithRuntime();
-        //movieClient.getTrailerKey(693134);
+//        movieClient.getTrailerKey(693134);
 //        movieClient.updateTrailerKeys();
     }
 }

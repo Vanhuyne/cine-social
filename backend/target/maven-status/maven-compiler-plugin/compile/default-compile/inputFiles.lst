@@ -17,8 +17,10 @@ D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\token\TokenRef
 D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\token\TokenRefreshResponse.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\LoginRequest.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\LoginResponse.java
-D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\UserDTO.java
+D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\UserProfileDTO.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\UserRegister.java
+D:\movie-social-network\backend\src\main\java\com\huy\backend\dto\user\UserRegistrationResponseDTO.java
+D:\movie-social-network\backend\src\main\java\com\huy\backend\exception\BadCredentialsException.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\exception\BadRequestException.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\exception\ErrorResponse.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\exception\GlobalExceptionHandler.java
@@ -30,6 +32,7 @@ D:\movie-social-network\backend\src\main\java\com\huy\backend\models\Movie.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\models\RefreshToken.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\models\Roles.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\models\User.java
+D:\movie-social-network\backend\src\main\java\com\huy\backend\models\Watchlist.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\repository\GenreRepo.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\repository\MovieRepo.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\repository\RefreshTokenRepo.java
@@ -39,10 +42,6 @@ D:\movie-social-network\backend\src\main\java\com\huy\backend\security\JwtAuthFi
 D:\movie-social-network\backend\src\main\java\com\huy\backend\security\JwtUtil.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\security\SecurityConfig.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\service\GenreService.java
-D:\movie-social-network\backend\src\main\java\com\huy\backend\service\impl\GenreServiceImpl.java
-D:\movie-social-network\backend\src\main\java\com\huy\backend\service\impl\MovieServiceImpl.java
-D:\movie-social-network\backend\src\main\java\com\huy\backend\service\impl\RefreshTokenServiceImpl.java
-D:\movie-social-network\backend\src\main\java\com\huy\backend\service\impl\UserServiceImpl.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\service\MovieService.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\service\RefreshTokenService.java
 D:\movie-social-network\backend\src\main\java\com\huy\backend\service\UserService.java

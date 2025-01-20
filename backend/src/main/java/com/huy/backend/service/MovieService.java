@@ -38,7 +38,6 @@ public class MovieService {
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
     }
 
-
     @CacheEvict(value = "moviesCache", allEntries = true)
     public MovieDTO addMovie(MovieDTO movieDTO) {
         if (movieRepo.findByTmdbId(movieDTO.getTmdbId()).isPresent()) {
@@ -122,4 +121,7 @@ public class MovieService {
                 .name(genreDTO.getName())
                 .build();
     }
+
+
 }
+

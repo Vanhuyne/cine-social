@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-
 import {  WatchListDetail } from '../models/WatchListDetail';
 import { Movie } from '../models/Movie';
 

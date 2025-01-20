@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { LoginRequest } from '../models/auth/LoginRequest';
 import { LoginResponse } from '../models/auth/LoginResponse';
 import { TokenRefreshResponse } from '../models/auth/TokenRefreshResponse';
-import { TokenRefreshRequest } from '../models/auth/TokenRefreshRequest';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../models/auth/RegisterRequest';
@@ -50,7 +49,7 @@ export class AuthService {
   refreshToken(): Observable<TokenRefreshResponse> {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
-      this.logout();
+      // this.logout();
       return throwError(() => new Error('Refresh token not available'));
     }
 

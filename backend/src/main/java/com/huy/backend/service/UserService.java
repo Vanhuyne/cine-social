@@ -22,7 +22,7 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
+public class UserService {
     private final UserRepo userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;

@@ -12,6 +12,7 @@ import { WatchlistService } from '../../../service/watchlist.service';
 
 export class MovieCardComponent {
   @Input() movie!: Movie;
+  @Input() notDisplayed: boolean = true;
   showTrailer: boolean = false;
   safeTrailerUrl!: SafeResourceUrl;
   isInWatchlist: boolean = false;

@@ -15,7 +15,7 @@ export class MovieService {
 
   getMoviesWithRandomPage(): Observable<MovieResponse> {
     const randomPage = Math.floor(Math.random() * 10) + 1;
-    const apiUrl = `${this.baseUrl}?page=${randomPage}&size=10`;
+    const apiUrl = `${this.baseUrl}/all?page=${randomPage}&size=10`;
     return this.http.get<MovieResponse>(apiUrl);
   }
 
@@ -24,7 +24,7 @@ export class MovieService {
       .set('page', page.toString())
       .set('size', '10');  // Match backend page size
 
-    return this.http.get<MovieResponse>(this.baseUrl, { params });
+    return this.http.get<MovieResponse>(`${this.baseUrl}/all`, { params });
   }
 
 

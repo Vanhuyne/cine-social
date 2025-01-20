@@ -1,10 +1,8 @@
 <section class="text-gray-800 py-8">
-    <div class="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-bold text-xl">{{ watchlist?.name }}</h2>
-        <div class="movie-cards">
-            <app-movie-card *ngFor="let movie of watchlist?.movies" [movie]="movie"></app-movie-card>
+    <div class="max-w-[960px] mx-auto px-4 sm:px-6 lg:px-8 ">
+        <h2 class="font-bold text-xl py-4">{{ watchlist?.name }}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <app-movie-card *ngFor="let movie of watchlist?.movies" [movie]="movie" [notDisplayed]="false"></app-movie-card>
         </div>
-
-
     </div>
 </section>

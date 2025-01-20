@@ -13,20 +13,20 @@
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" 
            [class.fill-current]="isInWatchlist"
-           [class.animate-pulse]="isInWatchlist">
+           >
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
       </svg>
     </button>
   </div>
 
-  <div class="mt-2">
+  <div class="mt-2" *ngIf="notDisplayed">
     <h3 class="text-[15px] leading-5 font-medium py-2 h-12">{{ movie.title.length > 30 ? (movie.title | slice:0:30) + '...' : movie.title }}</h3>
     <div class="flex space-x-2 mt-2">
       <div class="flex items-start">
         <span class="text-yellow-400">⭐</span>
         <span class="ml-1">{{(movie.voteAverage).toFixed(1)}}</span>
       </div>
-      <div class="flex ml-auto">
+      <div  class="flex ml-auto">
         <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-700"
         (click)="openTrailer($event)">
           <span class="">▶</span>
@@ -37,7 +37,7 @@
   </div>
 
   <!-- Trailer Modal -->
-  <div *ngIf="showTrailer" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" 
+  <div *ngIf="showTrailer && notDisplayed" class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4" 
        (click)="closeTrailer($event)">
     <div class="relative w-full max-w-4xl aspect-video" (click)="$event.stopPropagation()">
       <button 

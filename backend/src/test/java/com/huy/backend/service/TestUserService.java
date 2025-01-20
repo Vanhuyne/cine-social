@@ -9,8 +9,6 @@ import com.huy.backend.models.RefreshToken;
 import com.huy.backend.models.User;
 import com.huy.backend.repository.UserRepo;
 import com.huy.backend.security.JwtUtil;
-import com.huy.backend.service.impl.RefreshTokenServiceImpl;
-import com.huy.backend.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +38,7 @@ public class TestUserService {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserServiceImpl userService;
+    private UserService userService;
 
     private UserRegister userRegister;
 
@@ -51,7 +49,7 @@ public class TestUserService {
     private JwtUtil jwtUtil;
 
     @Mock
-    private RefreshTokenServiceImpl refreshTokenService;
+    private RefreshTokenService refreshTokenService;
 
     @BeforeEach
     public void setUp() {

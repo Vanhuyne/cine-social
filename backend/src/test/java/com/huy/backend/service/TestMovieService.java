@@ -4,7 +4,6 @@ import com.huy.backend.dto.MovieDTO;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;
 import com.huy.backend.repository.MovieRepo;
-import com.huy.backend.service.impl.MovieServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ public class TestMovieService {
     private MovieRepo movieRepo;
 
     @Autowired
-    private MovieServiceImpl movieServiceImpl;
+    private MovieService movieService;
 
     private Movie movie1;
     private Movie movie2;
@@ -100,7 +99,7 @@ public class TestMovieService {
         when(movieRepo.findAll(pageable)).thenReturn(moviePage);
 
         // When
-        Page<MovieDTO> result = movieServiceImpl.getAllMovies(pageable);
+        Page<MovieDTO> result = movieService.getAllMovies(pageable);
 
         // Then
         assertNotNull(result.getContent());
@@ -117,7 +116,7 @@ public class TestMovieService {
 
         when(movieRepo.findAll(pageable)).thenReturn(moviePage);
 
-        Page<MovieDTO> result = movieServiceImpl.getAllMovies(pageable);
+        Page<MovieDTO> result = movieService.getAllMovies(pageable);
 
         assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());

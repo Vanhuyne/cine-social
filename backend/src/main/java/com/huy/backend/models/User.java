@@ -37,10 +37,7 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_roles" , joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<Watchlist> watchlists = new ArrayList<>();
-
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(

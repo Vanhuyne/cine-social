@@ -5,9 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -46,9 +44,6 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> genres = new HashSet<>();
-
-    @ManyToMany(mappedBy = "movies")
-    private List<Watchlist> watchLists = new ArrayList<>();
 
     private Double popularity;
     private Double voteAverage;

@@ -85,4 +85,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        // list all path not use token
+        return path.startsWith("/api/auth/login") ||
+                path.startsWith("/api/auth/register") ||
+                path.startsWith("/api/auth/refresh") ||
+                path.startsWith("/api/movies/all") ||
+                path.startsWith("/api/movies/search");
+    }
 }

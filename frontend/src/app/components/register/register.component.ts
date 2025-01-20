@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../../service/auth.service';
-import { RegisterRequest } from '../../../models/auth/RegisterRequest';
+import { AuthService } from '../../service/auth.service';
+import { RegisterRequest } from '../../models/auth/RegisterRequest';
 
 @Component({
   selector: 'app-register',

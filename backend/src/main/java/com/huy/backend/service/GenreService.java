@@ -1,5 +1,7 @@
 package com.huy.backend.service;
 
+import org.springframework.stereotype.Service;
 
-public interface GenreService {
+@Service
+public class GenreServiceImpl {
 }

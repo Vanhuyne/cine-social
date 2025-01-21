@@ -1,6 +1,8 @@
-package com.huy.backend.dto;
+package com.huy.backend.dto.MovieDTO;
 
 
+import com.huy.backend.dto.GenreDTO;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,6 +16,8 @@ import java.util.Set;
 @Builder
 public class MovieDTO {
     private Long movieId;
+
+    @NotNull
     private String title;
     private LocalDate releaseDate;
     private Integer runtime;

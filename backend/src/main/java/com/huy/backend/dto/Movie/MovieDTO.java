@@ -1,4 +1,4 @@
-package com.huy.backend.dto.MovieDTO;
+package com.huy.backend.dto.Movie;
 
 
 import com.huy.backend.dto.GenreDTO;

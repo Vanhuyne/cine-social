@@ -49,7 +49,7 @@ export class AuthService {
   refreshToken(): Observable<TokenRefreshResponse> {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
-      // this.logout();
+      this.logout();
       return throwError(() => new Error('Refresh token not available'));
     }
 

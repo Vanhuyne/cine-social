@@ -18,6 +18,7 @@ import java.util.Set;
 @Builder
 public class Movie {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieId;
 
     @Column(nullable = false , length = 255)

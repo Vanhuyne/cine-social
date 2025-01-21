@@ -1,11 +1,14 @@
 package com.huy.backend.service;
 
 import com.huy.backend.dto.GenreDTO;
-import com.huy.backend.dto.MovieDTO;
+import com.huy.backend.dto.Movie.MovieCreateDTO;
+import com.huy.backend.dto.Movie.MovieDTO;
+import com.huy.backend.dto.Movie.MovieUpdateDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;
 import com.huy.backend.repository.MovieRepo;
+import com.huy.backend.utils.GenerateRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
@@ -39,18 +42,23 @@ public class MovieService {
     }
 
     @CacheEvict(value = "moviesCache", allEntries = true)
-    public MovieDTO addMovie(MovieDTO movieDTO) {
+    public MovieDTO addMovie(MovieCreateDTO movieDTO) {
         if (movieRepo.findByTmdbId(movieDTO.getTmdbId()).isPresent()) {
             throw new ResourceNotFoundException("Movie already exists");
         }
-        return convertToMovieDTO(movieRepo.save(convertToMovie(movieDTO)));
+
+        return convertToMovieDTO(movieRepo.save(convertCreatToMovie(movieDTO)));
     }
 
     @CacheEvict(value = "moviesCache", allEntries = true)
-    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) {
+    public MovieDTO updateMovie(Long movieId, MovieUpdateDTO movieDTO) {
         movieRepo.findById(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
-        return convertToMovieDTO(movieRepo.save(convertToMovie(movieDTO)));
+
+        Movie updateMovie = convertUpdateToMovie(movieDTO);
+        updateMovie.setMovieId(movieId);
+
+        return convertToMovieDTO(movieRepo.save(updateMovie));
     }
 
     @CacheEvict(value = "moviesCache", allEntries = true)
@@ -65,7 +73,6 @@ public class MovieService {
         return movieRepo.searchMovies(query, pageable).map(this::convertToMovieDTO);
     }
 
-    // clear cache when new movie is added , updated or deleted
 
     public MovieDTO convertToMovieDTO(Movie movie) {
         return MovieDTO.builder()
@@ -122,6 +129,46 @@ public class MovieService {
                 .build();
     }
 
+    private Movie convertUpdateToMovie(MovieUpdateDTO movieDTO) {
+        return Movie.builder()
+                .title(movieDTO.getTitle())
+                .releaseDate(movieDTO.getReleaseDate())
+                .runtime(movieDTO.getRuntime())
+                .overview(movieDTO.getOverview())
+                .posterPath(movieDTO.getPosterPath())
+                .backdropPath(movieDTO.getBackdropPath())
+                .tmdbId(movieDTO.getTmdbId())
+                .createdAt(movieDTO.getCreatedAt())
+                .popularity(movieDTO.getPopularity())
+                .voteAverage(movieDTO.getVoteAverage())
+                .voteCount(movieDTO.getVoteCount())
+                .trailerKey(movieDTO.getTrailerKey())
+                .genres(movieDTO.getGenreIds().stream().map(
+                        genreId -> Genre.builder().genreId(genreId).build())
+                        .collect(Collectors.toSet()))
+                .build();
+    }
+
+    private Movie convertCreatToMovie(MovieCreateDTO movieDTO) {
+        return Movie.builder()
+                .movieId(GenerateRandom.generateRandomLong())
+                .title(movieDTO.getTitle())
+                .releaseDate(movieDTO.getReleaseDate())
+                .runtime(movieDTO.getRuntime())
+                .overview(movieDTO.getOverview())
+                .posterPath(movieDTO.getPosterPath())
+                .backdropPath(movieDTO.getBackdropPath())
+                .tmdbId(movieDTO.getTmdbId())
+                .createdAt(movieDTO.getCreatedAt())
+                .popularity(movieDTO.getPopularity())
+                .voteAverage(movieDTO.getVoteAverage())
+                .voteCount(movieDTO.getVoteCount())
+                .trailerKey(movieDTO.getTrailerKey())
+                .genres(movieDTO.getGenreIds().stream().map(
+                                genreId -> Genre.builder().genreId(genreId).build())
+                        .collect(Collectors.toSet()))
+                .build();
+    }
 
 }
 

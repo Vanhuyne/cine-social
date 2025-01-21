@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("api/auth/**" ,"swagger-ui/**", "api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,  "/api/movies/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,  "/api/movies/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

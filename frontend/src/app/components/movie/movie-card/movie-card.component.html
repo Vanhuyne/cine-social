@@ -23,11 +23,11 @@
     <h3 class="text-[15px] leading-5 font-medium py-2 h-12">{{ movie.title.length > 30 ? (movie.title | slice:0:30) + '...' : movie.title }}</h3>
     <div class="flex space-x-2 mt-2">
       <div class="flex items-start">
-        <span class="text-yellow-400">⭐</span>
+        <span class="text-yellow-500 px-1">Imdb</span>
         <span class="ml-1">{{(movie.voteAverage).toFixed(1)}}</span>
       </div>
       <div  class="flex ml-auto">
-        <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-700"
+        <button class="flex items-end px-4 space-x-2 rounded-3xl hover:bg-zinc-400"
         (click)="openTrailer($event)">
           <span class="">▶</span>
           <span>Trailer</span>

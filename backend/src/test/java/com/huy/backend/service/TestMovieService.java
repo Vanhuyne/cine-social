@@ -1,6 +1,6 @@
 package com.huy.backend.service;
 
-import com.huy.backend.dto.MovieDTO;
+import com.huy.backend.dto.Movie.MovieDTO;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;
 import com.huy.backend.repository.MovieRepo;

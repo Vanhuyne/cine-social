@@ -1,7 +1,10 @@
 package com.huy.backend.controller;
 
-import com.huy.backend.dto.MovieDTO;
+import com.huy.backend.dto.Movie.MovieCreateDTO;
+import com.huy.backend.dto.Movie.MovieDTO;
+import com.huy.backend.dto.Movie.MovieUpdateDTO;
 import com.huy.backend.service.MovieService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +41,21 @@ public class MovieController {
         return new ResponseEntity<>(movieService.getMovieById(movieId), HttpStatus.OK);
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<MovieDTO> addMovie(@RequestBody @Valid MovieCreateDTO movieDTO) {
+        return new ResponseEntity<>(movieService.addMovie(movieDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{movieId}")
+    public ResponseEntity<MovieDTO> updateMovie(@PathVariable Long movieId, @RequestBody @Valid MovieUpdateDTO movieDTO) {
+        return new ResponseEntity<>(movieService.updateMovie(movieId, movieDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable Long movieId) {
+        movieService.deleteMovie(movieId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 
 }

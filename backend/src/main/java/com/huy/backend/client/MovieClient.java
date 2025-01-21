@@ -5,7 +5,7 @@ import com.huy.backend.client.response.MovieApiResponse;
 import com.huy.backend.client.response.VideoDTO;
 import com.huy.backend.client.response.VideoResponse;
 import com.huy.backend.dto.GenreDTO;
-import com.huy.backend.dto.MovieDTO;
+import com.huy.backend.dto.Movie.MovieDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;

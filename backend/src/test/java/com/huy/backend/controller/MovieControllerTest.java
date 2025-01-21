@@ -1,7 +1,7 @@
 package com.huy.backend.controller;
 
 import com.huy.backend.dto.GenreDTO;
-import com.huy.backend.dto.MovieDTO;
+import com.huy.backend.dto.Movie.MovieDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.service.MovieService;
 import org.junit.jupiter.api.BeforeEach;

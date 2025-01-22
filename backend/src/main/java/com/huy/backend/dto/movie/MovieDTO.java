@@ -1,5 +1,7 @@
-package com.huy.backend.dto.Movie;
+package com.huy.backend.dto.token;
 
+
+import com.huy.backend.dto.GenreDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class MovieUpdateDTO {
+public class MovieDTO {
     private Long movieId;
 
     @NotNull
@@ -22,11 +24,9 @@ public class MovieUpdateDTO {
     private String overview;
     private String posterPath;
     private String backdropPath;
-
-    @NotNull
     private Integer tmdbId;
     private LocalDateTime createdAt;
-    private Set<Long> genreIds;
+    private Set<GenreDTO> genres;
     private Double popularity;
     private Double voteAverage;
     private Integer voteCount;

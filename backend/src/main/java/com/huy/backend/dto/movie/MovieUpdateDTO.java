@@ -1,6 +1,5 @@
-package com.huy.backend.dto.Movie;
+package com.huy.backend.dto.token;
 
-import com.huy.backend.dto.GenreDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class MovieCreateDTO {
+public class MovieUpdateDTO {
     private Long movieId;
 
     @NotNull

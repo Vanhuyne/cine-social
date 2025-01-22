@@ -1,4 +1,4 @@
-package com.huy.backend.dto.token;
+package com.huy.backend.dto.movie;
 
 
 import com.huy.backend.dto.GenreDTO;

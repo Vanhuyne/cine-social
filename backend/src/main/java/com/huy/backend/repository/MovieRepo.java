@@ -27,4 +27,6 @@ public interface MovieRepo extends JpaRepository<Movie , Long> {
     List<Movie> findByRuntimeIsNull();
     List<Movie> findByTrailerKeyIsNull();
 
+    Page<Movie> findAllByOrderByPopularityDesc(Pageable pageable);
+
 }

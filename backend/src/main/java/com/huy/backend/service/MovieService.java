@@ -1,9 +1,9 @@
 package com.huy.backend.service;
 
 import com.huy.backend.dto.GenreDTO;
-import com.huy.backend.dto.Movie.MovieCreateDTO;
-import com.huy.backend.dto.Movie.MovieDTO;
-import com.huy.backend.dto.Movie.MovieUpdateDTO;
+import com.huy.backend.dto.movie.MovieCreateDTO;
+import com.huy.backend.dto.movie.MovieDTO;
+import com.huy.backend.dto.movie.MovieUpdateDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;
@@ -35,6 +35,11 @@ public class MovieService {
         return movieRepo.findAll(pageable).map(this::convertToMovieDTO);
     }
 
+    @Cacheable(value = "moviesCache", key = "'allMoviesByPopularity-' + #pageable.pageNumber + '-' + #pageable.pageSize")
+    public Page<MovieDTO> getAllMoviesByPopularity(Pageable pageable) {
+        return movieRepo.findAllByOrderByPopularityDesc(pageable).map(this::convertToMovieDTO);
+    }
+
     public MovieDTO getMovieById(Long movieId) {
         return movieRepo.findById(movieId)
                 .map(this::convertToMovieDTO)
@@ -47,18 +52,25 @@ public class MovieService {
             throw new ResourceNotFoundException("Movie already exists");
         }
 
-        return convertToMovieDTO(movieRepo.save(convertCreatToMovie(movieDTO)));
+        Movie movie = MovieCreateDTO.convertToMovie(movieDTO);
+
+        return convertToMovieDTO(movieRepo.save(movie));
     }
 
     @CacheEvict(value = "moviesCache", allEntries = true)
     public MovieDTO updateMovie(Long movieId, MovieUpdateDTO movieDTO) {
-        movieRepo.findById(movieId)
+        Movie movieExist = movieRepo.findById(movieId)
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
 
-        Movie updateMovie = convertUpdateToMovie(movieDTO);
-        updateMovie.setMovieId(movieId);
+       if (movieRepo.findByTmdbId(movieDTO.getTmdbId()).isPresent() && !movieExist.getTmdbId().equals(movieDTO.getTmdbId())) {
+            throw new ResourceNotFoundException("Movie with TMDB ID " + movieDTO.getTmdbId() + " already exists");
+       }
 
-        return convertToMovieDTO(movieRepo.save(updateMovie));
+       updateMovieFromDTO(movieExist, movieDTO);
+
+       Movie updatedMovie = movieRepo.save(movieExist);
+       return convertToMovieDTO(updatedMovie);
+
     }
 
     @CacheEvict(value = "moviesCache", allEntries = true)
@@ -91,10 +103,11 @@ public class MovieService {
                 .voteCount(movie.getVoteCount())
                 .trailerKey(movie.getTrailerKey())
                 .genres(movie.getGenres().stream().map(
-                        this::convertToGenreDTO)
+                        GenreDTO::convertToGenreDTO)
                         .collect(Collectors.toSet()))
                 .build();
     }
+
     private Movie convertToMovie(MovieDTO movieDTO) {
         return Movie.builder()
                 .movieId(movieDTO.getMovieId())
@@ -111,63 +124,24 @@ public class MovieService {
                 .voteCount(movieDTO.getVoteCount())
                 .trailerKey(movieDTO.getTrailerKey())
                 .genres(movieDTO.getGenres().stream().map(
-                        this::convertToGenre)
+                        GenreDTO::convertToGenre)
                         .collect(Collectors.toSet()))
                 .build();
     }
 
-    private GenreDTO convertToGenreDTO(Genre genre) {
-        return GenreDTO.builder()
-                .genreId(genre.getGenreId())
-                .name(genre.getName())
-                .build();
-    }
-    private Genre convertToGenre(GenreDTO genreDTO) {
-        return Genre.builder()
-                .genreId(genreDTO.getGenreId())
-                .name(genreDTO.getName())
-                .build();
-    }
 
-    private Movie convertUpdateToMovie(MovieUpdateDTO movieDTO) {
-        return Movie.builder()
-                .title(movieDTO.getTitle())
-                .releaseDate(movieDTO.getReleaseDate())
-                .runtime(movieDTO.getRuntime())
-                .overview(movieDTO.getOverview())
-                .posterPath(movieDTO.getPosterPath())
-                .backdropPath(movieDTO.getBackdropPath())
-                .tmdbId(movieDTO.getTmdbId())
-                .createdAt(movieDTO.getCreatedAt())
-                .popularity(movieDTO.getPopularity())
-                .voteAverage(movieDTO.getVoteAverage())
-                .voteCount(movieDTO.getVoteCount())
-                .trailerKey(movieDTO.getTrailerKey())
-                .genres(movieDTO.getGenreIds().stream().map(
-                        genreId -> Genre.builder().genreId(genreId).build())
-                        .collect(Collectors.toSet()))
-                .build();
-    }
-
-    private Movie convertCreatToMovie(MovieCreateDTO movieDTO) {
-        return Movie.builder()
-                .movieId(GenerateRandom.generateRandomLong())
-                .title(movieDTO.getTitle())
-                .releaseDate(movieDTO.getReleaseDate())
-                .runtime(movieDTO.getRuntime())
-                .overview(movieDTO.getOverview())
-                .posterPath(movieDTO.getPosterPath())
-                .backdropPath(movieDTO.getBackdropPath())
-                .tmdbId(movieDTO.getTmdbId())
-                .createdAt(movieDTO.getCreatedAt())
-                .popularity(movieDTO.getPopularity())
-                .voteAverage(movieDTO.getVoteAverage())
-                .voteCount(movieDTO.getVoteCount())
-                .trailerKey(movieDTO.getTrailerKey())
-                .genres(movieDTO.getGenreIds().stream().map(
-                                genreId -> Genre.builder().genreId(genreId).build())
-                        .collect(Collectors.toSet()))
-                .build();
+    private void updateMovieFromDTO(Movie movie, MovieUpdateDTO dto) {
+        movie.setTitle(dto.getTitle());
+        movie.setReleaseDate(dto.getReleaseDate());
+        movie.setRuntime(dto.getRuntime());
+        movie.setOverview(dto.getOverview());
+        movie.setPosterPath(dto.getPosterPath());
+        movie.setBackdropPath(dto.getBackdropPath());
+        movie.setTmdbId(dto.getTmdbId());
+        movie.setGenres(dto.getGenreIds().stream().map(
+                genreId -> Genre.builder().genreId(genreId).build())
+                .collect(Collectors.toSet()));
+        movie.setTrailerKey(dto.getTrailerKey());
     }
 
 }

@@ -1,2 +1,0 @@
-ALTER TABLE movies
-ADD COLUMN trailer_key VARCHAR(50);

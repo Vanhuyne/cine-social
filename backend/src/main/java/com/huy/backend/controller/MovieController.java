@@ -1,12 +1,13 @@
 package com.huy.backend.controller;
 
-import com.huy.backend.dto.Movie.MovieCreateDTO;
-import com.huy.backend.dto.Movie.MovieDTO;
-import com.huy.backend.dto.Movie.MovieUpdateDTO;
+import com.huy.backend.dto.movie.MovieCreateDTO;
+import com.huy.backend.dto.movie.MovieDTO;
+import com.huy.backend.dto.movie.MovieUpdateDTO;
 import com.huy.backend.service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,13 @@ public class MovieController {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         return new ResponseEntity<>(movieService.getAllMovies(pageable), HttpStatus.OK);
+    }
+    @GetMapping("/popularity")
+    public ResponseEntity<Page<MovieDTO>> getAllMoviesByPopularity(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(movieService.getAllMoviesByPopularity(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/search")

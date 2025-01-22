@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class MovieService {
   private baseUrl = 'http://localhost:8081/api/movies';
- 
+
   constructor(
     private http: HttpClient
   ) { }
@@ -27,6 +27,12 @@ export class MovieService {
     return this.http.get<MovieResponse>(`${this.baseUrl}/all`, { params });
   }
 
+  getMoviesByPupularity(page: number = 0): Observable<MovieResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', '10');
+    return this.http.get<MovieResponse>(`${this.baseUrl}/popularity`, { params });
+  }
 
   searchMovies(query: string, page: number = 0): Observable<MovieResponse> {
     const params = new HttpParams()
@@ -39,10 +45,10 @@ export class MovieService {
   getMovieById(movieId: number): Observable<Movie> {
     return this.http.get<Movie>(`${this.baseUrl}/${movieId}`);
   }
-   
+
 }
 
 
 
-  
+
 

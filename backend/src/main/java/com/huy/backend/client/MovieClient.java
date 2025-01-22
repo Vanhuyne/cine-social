@@ -5,7 +5,7 @@ import com.huy.backend.client.response.MovieApiResponse;
 import com.huy.backend.client.response.VideoDTO;
 import com.huy.backend.client.response.VideoResponse;
 import com.huy.backend.dto.GenreDTO;
-import com.huy.backend.dto.Movie.MovieDTO;
+import com.huy.backend.dto.movie.MovieDTO;
 import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.models.Genre;
 import com.huy.backend.models.Movie;
@@ -70,7 +70,6 @@ public class MovieClient {
                 if (movieApiResponse != null && !movieApiResponse.getResults().isEmpty()) {
                     List<MovieDTO> pageMovies = movieApiResponse.getResults().stream()
                             .map(movie -> MovieDTO.builder()
-                                    .movieId(GenerateRandom.generateRandomLong())
                                     .tmdbId(movie.getId())
                                     .title(movie.getTitle())
                                     .releaseDate(LocalDate.parse(movie.getReleaseDate()))

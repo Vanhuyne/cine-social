@@ -1,6 +1,5 @@
-package com.huy.backend.component;
+package com.huy.backend.client;
 
-import com.huy.backend.client.MovieClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class MovieSyncScheduler {
      */
     @Scheduled(fixedRate = 10 * 24 * 60 * 60 * 1000) // 10 days in milliseconds
     public void synchronizeFetchMovies() {
-        movieClient.syncMovie();
+//        movieClient.syncMovie();
 //        movieClient.updateMoviesWithRuntime();
 //        movieClient.getTrailerKey(693134);
 //        movieClient.updateTrailerKeys();

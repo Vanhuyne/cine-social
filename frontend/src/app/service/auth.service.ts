@@ -142,7 +142,6 @@ export class AuthService {
     return this.userRoles$.asObservable();
   }
 
-
   private handleSessionExpiration(): void {
     this.logout();
     alert('Session has expired. Please log in again.');

@@ -27,15 +27,15 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-        public ResponseEntity<UserRegistrationResponseDTO> register(@Valid @RequestBody UserRegister userRegister) {
+    public ResponseEntity<UserRegistrationResponseDTO> register(@Valid @RequestBody UserRegister userRegister) {
         UserRegistrationResponseDTO userDTO = userService.register(userRegister);
-            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-            LoginResponse loginResponse = userService.login(loginRequest);
-            return ResponseEntity.ok(loginResponse);
+        LoginResponse loginResponse = userService.login(loginRequest);
+        return ResponseEntity.ok(loginResponse);
 
     }
 
@@ -57,6 +57,5 @@ public class AuthController {
     public ResponseEntity<UserProfileDTO> getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
-
-
+    
 }

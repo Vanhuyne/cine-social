@@ -23,21 +23,23 @@ import java.util.List;
 @EnableCaching
 public class Application implements CommandLineRunner {
 
-	private static final Logger log = LoggerFactory.getLogger(Application.class);
-	@Autowired
-	private MovieRepo movieRepository;
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    @Autowired
+    private MovieRepo movieRepository;
 
-	@Autowired
-	private GenreRepo genreRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    @Autowired
+    private GenreRepo genreRepository;
 
-	@Override
-	@Transactional
-	public void run(String... args) throws Exception {
-		// Create and save genres
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+
+        // Create and save genres
 //		movieRepository.deleteAll();
 //		genreRepository.deleteAll();
 
@@ -120,6 +122,6 @@ public class Application implements CommandLineRunner {
 //		movieRepository.save(darkKnight);
 
 
-	}
+    }
 
 }

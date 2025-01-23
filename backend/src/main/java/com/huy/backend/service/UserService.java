@@ -8,6 +8,7 @@ import com.huy.backend.repository.UserRepo;
 import com.huy.backend.security.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -46,12 +48,12 @@ public class UserService {
         return mapUserToResponseDTO(savedUser);
     }
 
-    public LoginResponse login (LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         // Check if account exists
         if (userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail()).isEmpty()) {
-                throw new UsernameNotFoundException("Account does not exist");
+            throw new UsernameNotFoundException("Account does not exist");
         }
-        try{
+        try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsernameOrEmail(),
@@ -71,19 +73,11 @@ public class UserService {
         }
     }
 
-    // permission role for user
-//    public void permissionRoleForUser(User user, String role) {
-//        user.setRoles(Collections.singleton(role));
-//        userRepository.save(user);
-//    }
-
     public UserProfileDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         return mapUserToDTO(user);
     }
-
-
 
     private User mapRegisterToUser(UserRegister userRegister) {
         return User.builder()
@@ -114,4 +108,5 @@ public class UserService {
                 .email(user.getEmail())
                 .build();
     }
+
 }

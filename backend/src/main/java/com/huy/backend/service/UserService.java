@@ -73,6 +73,11 @@ public class UserService {
         }
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByUsernameOrEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
     public UserProfileDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();

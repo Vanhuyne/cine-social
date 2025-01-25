@@ -5,6 +5,7 @@ import { MovieDetailComponent } from './components/movie/movie-detail/movie-deta
 import { AuthGuard } from './guards/auth.guard';
 import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-dashbard.component';
 import { WatchListComponent } from './components/watch-list/watch-list.component';
+import { CallbackComponent } from './components/callback/callback.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/movies', pathMatch: 'full' },
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'movie/:movieId', component: MovieDetailComponent },
   { path: 'admin-dashbard', component: AdminDashbardComponent, canActivate: [AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
   { path: 'watch-list', component: WatchListComponent ,canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '/movies' }
+  // { path: '**', redirectTo: '/movies' },
+  { path: 'login-callback', component: CallbackComponent }
 ];
 
 @NgModule({

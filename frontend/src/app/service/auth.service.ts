@@ -20,6 +20,7 @@ interface DecodedToken {
   providedIn: 'root'
 })
 export class AuthService {
+  
   private readonly apiUrl = 'http://localhost:8081/api/auth';
 
   private loggedIn = new BehaviorSubject<boolean>(this.hasValidToken());
@@ -145,5 +146,42 @@ export class AuthService {
   private handleSessionExpiration(): void {
     this.logout();
     alert('Session has expired. Please log in again.');
+  }
+
+  redirectToGoogle() {
+    const state = this.generateRandomString();
+    localStorage.setItem('oauth_state', state);
+
+    const params = new URLSearchParams({
+      // client_id: environment.googleClientId,
+      // redirect_uri: environment.googleRedirectUri,
+      client_id: '365751882162-t0rc1qpigmbverunjccru6v374dhvlc2.apps.googleusercontent.com',
+      redirect_uri: 'http://localhost:4200/login-callback',
+      response_type: 'code',
+      scope: 'openid email profile',
+      state: state,
+      access_type: 'offline'
+    });
+    
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  }
+
+  private generateRandomString(): string {
+    return Math.random().toString(36).substring(2, 15);
+  }
+
+  exchangeCodeForToken(code: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/google`, { code }).pipe(
+      tap((response: LoginResponse) => {
+        // Store tokens and update state
+        localStorage.setItem('accessToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+
+        // Update logged in state and user information
+        this.loggedIn.next(true);
+        this.currentUser$.next(this.getUsernameFromToken());
+        this.userRoles$.next(this.getUserRolesFromToken());
+      })
+    );;
   }
 }

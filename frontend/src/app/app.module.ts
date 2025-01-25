@@ -19,6 +19,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-dashbard.component';
 import { UnauthorizedComponentComponent } from './components/unauthorized-component/unauthorized-component.component';
 import { WatchListComponent } from './components/watch-list/watch-list.component';
+import { CallbackComponent } from './components/callback/callback.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { WatchListComponent } from './components/watch-list/watch-list.component
     AdminDashbardComponent,
     UnauthorizedComponentComponent,
     WatchListComponent,
+    CallbackComponent,
   ],
   imports: [
     BrowserModule,

@@ -71,4 +71,8 @@ export class LoginComponent {
   openRegisterForm() {
     this.openRegister.emit();
   }
+
+  loginWithGoogle(){
+    this.authService.redirectToGoogle();
+  }
 }

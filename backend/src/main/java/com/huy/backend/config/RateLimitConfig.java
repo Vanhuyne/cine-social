@@ -13,7 +13,7 @@ public class RateLimitConfig {
 
     @Bean
     public Bucket createNewBucket() {
-        Bandwidth limit = Bandwidth.classic(5, Refill.greedy(5, Duration.ofMinutes(1)));
+        Bandwidth limit = Bandwidth.classic(10, Refill.greedy(5, Duration.ofMinutes(1)));
         return Bucket.builder().addLimit(limit).build();
     }
 }

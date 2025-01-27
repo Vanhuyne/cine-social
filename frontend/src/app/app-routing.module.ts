@@ -6,14 +6,17 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-dashbard.component';
 import { WatchListComponent } from './components/watch-list/watch-list.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.component';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/movies', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  {path: 'home', component: HomeComponent},
   { path: 'movies', component: MovieListComponent },
   { path: 'movie/:movieId', component: MovieDetailComponent },
   { path: 'admin-dashbard', component: AdminDashbardComponent, canActivate: [AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
   { path: 'watch-list', component: WatchListComponent ,canActivate: [AuthGuard] },
-  // { path: '**', redirectTo: '/movies' },
+  { path: 'explore', component: HomeComponent },
   { path: 'login-callback', component: CallbackComponent }
 ];
 

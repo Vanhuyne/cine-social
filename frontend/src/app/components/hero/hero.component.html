@@ -1,0 +1,19 @@
+<section class="h-screen flex items-center text-white">
+    <div class="absolute inset-0 z-0">
+      <img src="https://source.unsplash.com/random/1920x1080/?movie" class="w-full h-full object-cover"
+        alt="Movie Background">
+      <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+
+    <div class="container mx-auto px-24 relative z-10 pt-20">
+      <div class="max-w-2xl">
+        <span class="bg-cyan-500/20 text-cyan-400 px-4 py-1 rounded-full text-sm">Now Trending</span>
+        <h2 class="text-7xl font-['Bebas_Neue'] mt-6 leading-tight">Join The Ultimate Movie Community</h2>
+        <p class="text-gray-300 mt-4 text-lg">Rate, review, and discuss films with millions of cinephiles worldwide.
+          Discover hidden gems and create your personal watchlist.</p>
+        <div class="mt-8">
+          <app-search [isHeader]="true"></app-search>
+        </div>
+      </div>
+    </div>
+  </section>

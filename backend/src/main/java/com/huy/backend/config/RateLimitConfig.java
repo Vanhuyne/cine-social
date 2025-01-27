@@ -13,7 +13,8 @@ public class RateLimitConfig {
 
     @Bean
     public Bucket createNewBucket() {
-        Bandwidth limit = Bandwidth.classic(10, Refill.greedy(5, Duration.ofMinutes(1)));
+        // 100 requests per minute, refilling 10 tokens every 6 seconds
+        Bandwidth limit = Bandwidth.classic(100, Refill.intervally(10, Duration.ofSeconds(6)));
         return Bucket.builder().addLimit(limit).build();
     }
 }

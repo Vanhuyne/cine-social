@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Movie, MovieResponse } from '../../../models/Movie';
 import { MovieService } from '../../../service/movie.service';
+import { combineLatest, Subscription } from 'rxjs';
+import { SearchService } from '../../../service/search.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-gird',
@@ -15,50 +18,87 @@ export class MovieGirdComponent {
   totalElements = 0;
   loading = false;
   currentQuery: string = '';
+  private subscriptions: Subscription[] = [];
 
-  constructor(private movieService: MovieService) {
+  constructor(
+    private movieService: MovieService,
+    private searchService: SearchService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
 
   }
 
   ngOnInit() {
-    this.searchMovies('');
+    // Combine route params and search service updates
+    this.subscriptions.push(
+      combineLatest([
+        this.route.queryParams,
+        this.searchService.searchQuery$,
+        this.searchService.isSearchCleared$
+      ]).subscribe(([params, searchQuery, isCleared]) => {
+        if (isCleared) {
+          this.loadInitialMovies();
+          return;
+        }
+
+        const query = params['query'] || searchQuery;
+        const page = params['page'] ? Number(params['page']) - 1 : 0;
+
+        this.currentQuery = query;
+        this.currentPage = page;
+
+        if (query) {
+          this.searchMovies(query, page);
+        } else {
+          this.loadInitialMovies();
+        }
+
+        if (query !== params['query'] || (page + 1) !== Number(params['page'])) {
+          this.updateUrlParams(query, page + 1);
+        }
+      })
+    );
   }
 
-  onSearch(query: string): void {
-    this.currentQuery = query;
-    this.currentPage = 0; // Reset to the first page for a new search
-    this.searchMovies(query);
-  }
-
-  loadMovies(page: number) {
+  loadInitialMovies() {
     this.loading = true;
-    this.movieService.getMovies(page).subscribe({
+    this.movieService.getMovies(0).subscribe({
       next: (response: MovieResponse) => {
         this.movies = response.content;
-        this.currentPage = response.page.number;
-        this.pageSize = response.page.size;
         this.totalPages = response.page.totalPages;
         this.totalElements = response.page.totalElements;
+        this.pageSize = response.page.size;
+        this.currentPage = 0;
         this.loading = false;
+
+        // Update URL to remove search params
+        this.updateUrlParams(null, 1);
       },
       error: (error) => {
-        console.error('Error loading movies:', error);
+        console.error('Error loading initial movies:', error);
         this.loading = false;
       }
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page - 1;
-    this.searchMovies(this.currentQuery, this.currentPage); // Convert to 0-based for backend
-    const element = document.getElementById('movie-gird');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  getMinValue(a: number, b: number): number {
-    return Math.min(a, b);
+  onPageChange(page: number) {
+    this.updateUrlParams(this.currentQuery, page);
+  }
+
+  private updateUrlParams(query: string | null, page: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        query: query || null,
+        page: page
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 
   searchMovies(query: string, page: number = 0): void {
@@ -78,5 +118,8 @@ export class MovieGirdComponent {
     });
   }
 
+  getMinValue(a: number, b: number): number {
+    return Math.min(a, b);
+  }
 
 }

@@ -4,6 +4,7 @@ import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class RateLimitingFilter implements Filter {
         if (bucket.tryConsume(1)) {
             chain.doFilter(request, response); // Forward the request if rate limiting is not hit
         } else {
-            ((HttpServletResponse) response).setStatus(429); // Return 429 if rate limit is exceeded
+            ((HttpServletResponse) response).setStatus(HttpStatus.TOO_MANY_REQUESTS.value()); // Return 429 if rate limit is exceeded
         }
     }
 

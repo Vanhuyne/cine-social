@@ -20,6 +20,8 @@ import { AdminDashbardComponent } from './components/admin/admin-dashbard/admin-
 import { UnauthorizedComponentComponent } from './components/unauthorized-component/unauthorized-component.component';
 import { WatchListComponent } from './components/watch-list/watch-list.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { HeroComponent } from './components/hero/hero.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { CallbackComponent } from './components/callback/callback.component';
     UnauthorizedComponentComponent,
     WatchListComponent,
     CallbackComponent,
+    HeroComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

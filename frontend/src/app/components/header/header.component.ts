@@ -62,33 +62,33 @@ export class HeaderComponent implements OnDestroy {
   }
 
   // Open Login Modal
-  openLoginModal(): void {
-    this.showLoginModal = true;
-    this.showRegisterModal = false;
-  }
+  // openLoginModal(): void {
+  //   this.showLoginModal = true;
+  //   this.showRegisterModal = false;
+  // }
 
   // Open Register Modal
-  openRegisterModal(): void {
-    this.showRegisterModal = true;
-    this.showLoginModal = false;
-  }
+  // openRegisterModal(): void {
+  //   this.showRegisterModal = true;
+  //   this.showLoginModal = false;
+  // }
 
   // Close Modals
-  closeLoginModal(): void {
-    this.showLoginModal = false;
-  }
+  // closeLoginModal(): void {
+  //   this.showLoginModal = false;
+  // }
 
-  closeRegisterModal(): void {
-    this.showRegisterModal = false;
-  }
+  // closeRegisterModal(): void {
+  //   this.showRegisterModal = false;
+  // }
 
   // Switch to Register Modal
-  switchToRegister(): void {
-    this.openRegisterModal();
-  }
+  // switchToRegister(): void {
+  //   this.openRegisterModal();
+  // }
 
   // Switch to Login Modal
-  switchToLogin(): void {
-    this.openLoginModal();
-  }
+  // switchToLogin(): void {
+  //   this.openLoginModal();
+  // }
 }

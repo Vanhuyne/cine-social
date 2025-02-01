@@ -1,25 +1,25 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { AuthService } from '../../service/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
-  @Output() closeModal = new EventEmitter<void>();
-  @Output() openRegister = new EventEmitter<void>();
-
-  loginForm! : FormGroup;
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
   showPassword = false;
 
   constructor(
     private authService: AuthService,
-    private fb : FormBuilder,
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       usernameOrEmail: ['', [Validators.required]],
@@ -27,9 +27,12 @@ export class LoginComponent {
       rememberMe: [false]
     });
   }
-
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.errorMessage = params['error'] || null;
+    });
+  }
   onSubmit() {
-    
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -37,11 +40,10 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.closeModal.emit();
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           console.log(error);
-
           this.isLoading = false;
           this.errorMessage = error.error.message || 'An error occurred during login';
 
@@ -64,15 +66,7 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
-  onClose(): void {
-    this.closeModal.emit();
-  }
-
-  openRegisterForm() {
-    this.openRegister.emit();
-  }
-
-  loginWithGoogle(){
+  loginWithGoogle() {
     this.authService.redirectToGoogle();
   }
 }

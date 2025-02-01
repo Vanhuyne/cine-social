@@ -1,6 +1,6 @@
 <section class="h-screen flex items-center text-white">
-    <div class="absolute inset-0 z-0">
-      <img src="https://source.unsplash.com/random/1920x1080/?movie" class="w-full h-full object-cover"
+    <div class="absolute inset-0 z-0" *ngIf="movies.length > 0">
+      <img [src]="getImageUrl(movies[0].backdropPath)" class="w-full h-full object-cover"
         alt="Movie Background">
       <div class="absolute inset-0 hero-gradient"></div>
     </div>

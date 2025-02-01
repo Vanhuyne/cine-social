@@ -8,6 +8,8 @@ import { WatchListComponent } from './components/watch-list/watch-list.component
 import { CallbackComponent } from './components/callback/callback.component';
 import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.component';
 import { HomeComponent } from './components/home/home.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,7 +19,10 @@ const routes: Routes = [
   { path: 'admin-dashbard', component: AdminDashbardComponent, canActivate: [AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
   { path: 'watch-list', component: WatchListComponent ,canActivate: [AuthGuard] },
   { path: 'explore', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'login-callback', component: CallbackComponent }
+  
 ];
 
 @NgModule({

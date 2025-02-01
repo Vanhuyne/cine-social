@@ -15,7 +15,6 @@ export class CallbackComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       const state = params['state'];
@@ -26,24 +25,18 @@ export class CallbackComponent implements OnInit {
         this.router.navigate(['/']);
         return;
       }
-
       const savedState = localStorage.getItem('oauth_state');
       if (state !== savedState) {
-        console.error('State does not match');
+        // console.error('State does not match');
         this.router.navigate(['/'], { queryParams: { error: 'invalid_state' } });
         return;
       }
 
       this.authService.exchangeCodeForToken(code).subscribe({
-        next: () => this.router.navigate(['/']),
+        next: () => this.router.navigate(['/home']),
         error: (err) => {
-          if (err.error?.error === 'user_not_registered') {
-            // Redirect to a registration page or prompt the user to complete their profile
-            console.log(err.error);
-            this.router.navigate(['/'], { state: { userInfo: err.error.userInfo } });
-          } else {
-            this.router.navigate(['/'], { queryParams: { error: 'auth_failed' } });
-          }
+          console.error('Error exchanging code for token: ', err.error.message);
+          this.router.navigate(['/login'], { queryParams: { error: err.error.message } });
         }
       });
     });

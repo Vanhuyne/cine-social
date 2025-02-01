@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
 import { RegisterRequest } from '../../models/auth/RegisterRequest';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -9,17 +10,18 @@ import { RegisterRequest } from '../../models/auth/RegisterRequest';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  @Output() closeModal = new EventEmitter<void>();
-  @Output() openLogin = new EventEmitter<void>();
 
   registerForm !: FormGroup;
   isLoading = false;
   errorMessage : string | null = null;
   sucessMessage : string | null = null;
+  showPassword = false;
+  showRetypePassword = false;
 
   constructor(
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -52,6 +54,10 @@ export class RegisterComponent {
           this.sucessMessage = 'Registration successful';
           this.isLoading = false;
           this.registerForm.reset();
+          
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
         },
         error: (error) => {
           console.error('Registration error:', error);
@@ -62,10 +68,11 @@ export class RegisterComponent {
     
   }
 
-  openLoginForm() {
-    this.openLogin.emit();
-  }
-  onClose() {
-    this.closeModal.emit();
+  togglePasswordVisibility(field: 'password' | 'retypePassword'): void {
+    if (field === 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showRetypePassword = !this.showRetypePassword;
+    }
   }
 }

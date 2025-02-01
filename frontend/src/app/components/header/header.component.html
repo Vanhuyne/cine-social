@@ -1,5 +1,5 @@
 <header class="text-white ">
-  <nav class="fixed w-full z-50 bg-gray-900/80 backdrop-blur-md px-24">
+  <nav class="fixed w-full z-50 bg-gray-900/80 backdrop-blur-0 px-24">
     <div class="container mx-auto  py-4 flex justify-between items-center">
       <h1 class="text-3xl font-['Bebas_Neue'] tracking-wide">CineSocial</h1>
       <div class="space-x-6">
@@ -8,7 +8,7 @@
         <a href="#" class="hover:text-cyan-400 transition-colors">Lists</a>
         <ng-container *ngIf="!(authService.getCurrentUser() | async); else userMenu">
           <button class="bg-cyan-500 px-6 py-2 rounded-full hover:bg-cyan-600 transition-colors"
-            (click)="showLoginModal = true">
+            routerLink="/login">
             Sign in
           </button>
         </ng-container>
@@ -73,9 +73,9 @@
 
   <!-- Hero Section -->
   
-  <app-login *ngIf="showLoginModal" (closeModal)="closeLoginModal()" (openRegister)="switchToRegister()">
+  <!-- <app-login *ngIf="showLoginModal" (closeModal)="closeLoginModal()" (openRegister)="switchToRegister()">
   </app-login>
 
   <app-register *ngIf="showRegisterModal" (closeModal)="closeRegisterModal()" (openLogin)="switchToLogin()">
-    ></app-register>
+    ></app-register> -->
 </header>

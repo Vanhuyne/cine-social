@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    movie_id BIGINT NOT NULL,
+    rating INT NOT NULL,
+    comment VARCHAR(2000),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_review_movie FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+);

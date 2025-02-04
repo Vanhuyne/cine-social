@@ -22,6 +22,7 @@ import { WatchListComponent } from './components/watch-list/watch-list.component
 import { CallbackComponent } from './components/callback/callback.component';
 import { HeroComponent } from './components/hero/hero.component';
 import { HomeComponent } from './components/home/home.component';
+import { ReviewComponent } from './components/review/review.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { HomeComponent } from './components/home/home.component';
     CallbackComponent,
     HeroComponent,
     HomeComponent,
+    ReviewComponent,
   ],
   imports: [
     BrowserModule,

@@ -19,4 +19,15 @@ public class ReviewResponse {
     private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+    public static ReviewResponse convertToReviewResponse(Review review) {
+        return ReviewResponse.builder()
+                .reviewId(review.getReviewId())
+                .userDisplayName(review.getUser().getUsername())
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .build();
+    }
 }

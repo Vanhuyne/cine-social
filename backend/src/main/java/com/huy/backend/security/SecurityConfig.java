@@ -39,10 +39,10 @@ public class SecurityConfig {
                 csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("api/auth/**" ,"swagger-ui/**", "api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,  "/api/movies/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE,  "/api/movies/**").hasRole("ADMIN")
+                        .requestMatchers("api/auth/**", "swagger-ui/**", "api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**", "api/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/movies/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/movies/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

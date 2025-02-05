@@ -10,6 +10,8 @@ import com.huy.backend.repository.MovieRepo;
 import com.huy.backend.repository.ReviewRepo;
 import com.huy.backend.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,10 @@ public class ReviewService {
     private final UserRepo userRepo;
     private final MovieRepo movieRepo;
 
-    public List<ReviewResponse> getReviewsByMovieId(Long movieId) {
-        List<ReviewResponse> reviewDTOs = reviewRepo.findByMovie_MovieId(movieId).stream()
-                .map(ReviewResponse::convertToReviewResponse)
-                .toList();
+    public Page<ReviewResponse> getReviewsByMovieId(Long movieId, int page, int size) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        Page<ReviewResponse> reviewDTOs = reviewRepo.findByMovie_MovieId(movieId, pageable)
+                .map(ReviewResponse::convertToReviewResponse);
         return reviewDTOs;
     }
 

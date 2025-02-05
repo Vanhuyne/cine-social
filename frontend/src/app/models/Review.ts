@@ -3,7 +3,7 @@ export interface ReviewRequest {
     rating: number;
     comment: string;
 }
-export interface Review{
+export interface ReviewResponse{
     reviewId: number;
     userDisplayName: string;
     rating: number;
@@ -11,3 +11,12 @@ export interface Review{
     createdAt: string;
     updatedAt: string;
 }
+export interface PageResponse<T> {
+    content: T[];
+    page: {
+      size: number;
+      number: number;
+      totalElements: number;
+      totalPages: number;
+    };
+  }

@@ -1,6 +1,7 @@
 package com.huy.backend.dto.review;
 
 import com.huy.backend.models.Review;
+import com.huy.backend.models.Vote;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class ReviewResponse {
     private String comment;
     private Long upVotes;
     private Long downVotes;
+    private Vote.VoteType userVote;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -34,7 +36,7 @@ public class ReviewResponse {
     }
 
     // new constructor
-    public ReviewResponse(Review review, Long upVotes, Long downVotes) {
+    public ReviewResponse(Review review, Long upVotes, Long downVotes, Vote.VoteType userVote) {
         this.reviewId = review.getReviewId();
         this.userDisplayName = review.getUser().getUsername();
         this.rating = review.getRating();
@@ -43,5 +45,6 @@ public class ReviewResponse {
         this.updatedAt = review.getUpdatedAt();
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.userVote = userVote;
     }
 }

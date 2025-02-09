@@ -15,14 +15,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   @Input() movieId!: number;
   reviews: ReviewResponse[] = [];
-  
+
   // Pagination state
   currentPage: number = 0; // note: service uses 0-based pages
   totalPages: number = 0;
   pageSize: number = 5;
   isLoading: boolean = false;
   isModalOpen = false;
-  
+
   private destroy$ = new Subject<void>();
   isLoggedIn = false;
   currentUser: string | null = null;
@@ -33,7 +33,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     private router: Router,
     private voteService: VoteService
   ) {
-   
+
   }
 
   ngOnInit(): void {
@@ -119,50 +119,55 @@ export class ReviewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const voteRequest = {
-      reviewId,
-      voteType
-    }
+    const voteRequest = { reviewId, voteType };
 
-    // Call your vote service here
     this.voteService.vote(voteRequest).subscribe({
       next: (response) => {
-        // Update the review in the reviews array
+        // Find the review in the array.
         const reviewIndex = this.reviews.findIndex(r => r.reviewId === reviewId);
         if (reviewIndex !== -1) {
           const review = this.reviews[reviewIndex];
-          
-          // If user is removing their vote
+
+          // If the user clicks the same vote button, remove their vote.
           if (review.userVote === voteType) {
-            if (voteType === 'UP') review.upVotes--;
-            if (voteType === 'DOWN') review.downVotes--;
+            if (voteType === 'UP') {
+              review.upVotes = Math.max(0, review.upVotes - 1);
+            } else {
+              review.downVotes = Math.max(0, review.downVotes - 1);
+            }
             review.userVote = null;
-          } 
-          // If user is changing their vote
+          }
+          // If the user is changing their vote (from UP to DOWN or vice versa).
+          // If the user has already voted and is now switching the vote.
           else if (review.userVote) {
             if (voteType === 'UP') {
               review.upVotes++;
-              review.downVotes--;
+              review.downVotes = Math.max(0, review.downVotes - 1);
             } else {
-              review.upVotes++;
-              review.downVotes--;
+              review.downVotes++;
+              review.upVotes = Math.max(0, review.upVotes - 1);
             }
             review.userVote = voteType;
           }
-          // If user is voting for the first time
+          // If the user is voting for the first time.
           else {
-            if (voteType === 'UP') review.upVotes++;
-            if (voteType === 'DOWN') review.downVotes++;
+            if (voteType === 'UP') {
+              review.upVotes++;
+            } else {
+              review.downVotes++;
+            }
             review.userVote = voteType;
           }
-          
+
+          // Reassign the review to trigger change detection.
           this.reviews[reviewIndex] = { ...review };
         }
       },
       error: (error) => {
         console.error('Error voting:', error);
-        // Handle error - maybe show error message
+        // Optionally, show an error message to the user.
       }
     });
+
   }
 }

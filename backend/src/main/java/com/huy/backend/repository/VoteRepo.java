@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface VoteRepo extends JpaRepository<Vote, Long> {
     Optional<Vote> findByUserAndReview(User user, Review review);
 
+//    Optional<Vote> findByReviewAndUser(Review review, User user);
+
     Long countByReviewAndVoteType(Review review, Vote.VoteType voteType);
 }

@@ -28,11 +28,15 @@ public class ReviewService {
     public Page<ReviewResponse> getReviewsByMovieId(Long movieId, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         Page<Review> reviewPage = reviewRepo.findByMovie_MovieId(movieId, pageable);
-        return reviewPage.map(review -> {
-            Long upVotes = voteRepo.countByReviewAndVoteType(review, Vote.VoteType.UP);
-            Long downVotes = voteRepo.countByReviewAndVoteType(review, Vote.VoteType.DOWN);
-            return new ReviewResponse(review, upVotes, downVotes);
-        });
+
+        User user = getAuthenticatedUserOrNull();
+
+        return reviewPage.map(review -> new ReviewResponse(
+                review,
+                voteRepo.countByReviewAndVoteType(review, Vote.VoteType.UP),
+                voteRepo.countByReviewAndVoteType(review, Vote.VoteType.DOWN),
+                (user != null) ? voteRepo.findByUserAndReview(user, review).map(Vote::getVoteType).orElse(null) : null
+        ));
     }
 
     // add review
@@ -71,6 +75,14 @@ public class ReviewService {
                 () -> new RuntimeException("Review not found")
         );
         reviewRepo.delete(review);
+    }
+
+    private User getAuthenticatedUserOrNull() {
+        try {
+            return userService.getAuthCurrent();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

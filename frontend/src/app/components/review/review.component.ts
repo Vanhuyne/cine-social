@@ -1,31 +1,29 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ReviewResponse, ReviewRequest, PageResponse } from '../../models/Review';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReviewService } from '../../service/review.service';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { VoteService } from '../../service/vote.service';
 
 @Component({
   selector: 'app-review',
   templateUrl: './review.component.html'
 })
 export class ReviewComponent implements OnInit, OnDestroy {
+
   @Input() movieId!: number;
   reviews: ReviewResponse[] = [];
   
   // Pagination state
-  currentPage = 0; // Spring Boot uses 0-based pagination
-  pageSize = 5;
-  totalPages = 0;
-  totalElements = 0;
-  isLoading = false;
+  currentPage: number = 0; // note: service uses 0-based pages
+  totalPages: number = 0;
+  pageSize: number = 5;
+  isLoading: boolean = false;
+  isModalOpen = false;
   
   private destroy$ = new Subject<void>();
-  isFormVisible = false;
-  selectedRating = 0;
-  reviewForm: FormGroup;
   isLoggedIn = false;
   currentUser: string | null = null;
 
@@ -33,17 +31,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
     private reviewService: ReviewService,
     private authService: AuthService,
     private router: Router,
-    private fb: FormBuilder
+    private voteService: VoteService
   ) {
-    this.reviewForm = this.fb.group({
-      comment: ['', [Validators.required, Validators.maxLength(2000)]]
-    });
+   
   }
 
   ngOnInit(): void {
     this.setupAuthSubscriptions();
-    this.loadInitialReviews();
-    this.setupInfiniteScroll();
+    this.loadReviews();
   }
 
   ngOnDestroy(): void {
@@ -56,24 +51,35 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(loggedIn => {
         this.isLoggedIn = loggedIn;
-        if (!loggedIn && this.isFormVisible) {
-          this.isFormVisible = false;
-        }
       });
 
     this.authService.getCurrentUser()
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => this.currentUser = user);
   }
+  openReviewModal(): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url }
+      });
+      return;
+    }
+    this.isModalOpen = true;
+  }
 
-  private loadInitialReviews(): void {
+  closeReviewModal(): void {
+    this.isModalOpen = false;
+  }
+
+  private loadReviews(): void {
     this.isLoading = true;
-    this.reviewService.getMovieReviews(this.movieId)
+    this.reviewService.getMovieReviews(this.movieId, this.currentPage, this.pageSize)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          this.reviews = response.content;
-          this.updatePaginationState(response);
+        next: (pageResponse: PageResponse<ReviewResponse>) => {
+          this.reviews = this.reviews.concat(pageResponse.content);
+          console.log('Reviews:', this.reviews);
+          this.totalPages = pageResponse.page.totalPages;
           this.isLoading = false;
         },
         error: (err) => {
@@ -82,103 +88,81 @@ export class ReviewComponent implements OnInit, OnDestroy {
         }
       });
   }
-
-  private updatePaginationState(response: PageResponse<ReviewResponse>): void {
-    this.currentPage = response.page.number;
-    this.totalPages = response.page.totalPages;
-    this.totalElements = response.page.totalElements;
-    this.pageSize = response.page.size;
+  loadMore(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadReviews();
+    }
   }
 
-  loadMoreReviews(): void {
-    if (this.isLoading || this.currentPage >= this.totalPages - 1) return;
-
-    this.isLoading = true;
-    const nextPage = this.currentPage + 1;
-
-    this.reviewService.getMovieReviews(this.movieId, nextPage, this.pageSize)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.reviews = [...this.reviews, ...response.content];
-          this.updatePaginationState(response);
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error loading more reviews:', err);
-          this.isLoading = false;
-        }
-      });
-  }
-
-  private setupInfiniteScroll(): void {
-    const options = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5
+  handleReviewSubmit(reviewRequest: ReviewRequest): void {
+    const completeRequest = {
+      ...reviewRequest,
+      movieId: this.movieId
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !this.isLoading && this.currentPage < this.totalPages - 1) {
-          this.loadMoreReviews();
-        }
+    this.reviewService.createReview(completeRequest)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (review) => {
+          this.reviews.unshift(review);
+          this.closeReviewModal();
+        },
+        error: (err) => console.error('Error submitting review:', err)
       });
-    }, options);
-
-    // Observe the sentinel element
-    setTimeout(() => {
-      const sentinel = document.querySelector('.sentinel');
-      if (sentinel) {
-        observer.observe(sentinel);
-      }
-    }, 0);
   }
 
-  onSubmit(): void {
+  handleVote(reviewId: number, voteType: 'UP' | 'DOWN') {
     if (!this.isLoggedIn) {
+      // Handle not logged in state - maybe show login prompt
       this.router.navigate(['/login']);
       return;
     }
 
-    if (this.reviewForm.valid && this.selectedRating > 0) {
-      const reviewRequest: ReviewRequest = {
-        movieId: this.movieId,
-        rating: this.selectedRating,
-        comment: this.reviewForm.value.comment
-      };
-
-      this.reviewService.createReview(reviewRequest)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (review) => {
-            this.reviews.unshift(review);
-            this.reviewForm.reset();
-            this.selectedRating = 0;
-            this.isFormVisible = false;
-          },
-          error: (err) => console.error('Error submitting review:', err)
-        });
-    }
-  }
-  
-  setRating(rating: number): void {
-    this.selectedRating = rating;
-  }
-
-  toggleReviewForm(): void {
-    if (!this.isLoggedIn) {
-      this.router.navigate(['/login'], {
-        queryParams: { returnUrl: this.router.url }
-      });
-      return;
+    const voteRequest = {
+      reviewId,
+      voteType
     }
 
-    this.isFormVisible = !this.isFormVisible;
-    if (!this.isFormVisible) {
-      this.reviewForm.reset();
-      this.selectedRating = 0;
-    }
+    // Call your vote service here
+    this.voteService.vote(voteRequest).subscribe({
+      next: (response) => {
+        // Update the review in the reviews array
+        const reviewIndex = this.reviews.findIndex(r => r.reviewId === reviewId);
+        if (reviewIndex !== -1) {
+          const review = this.reviews[reviewIndex];
+          
+          // If user is removing their vote
+          if (review.userVote === voteType) {
+            if (voteType === 'UP') review.upVotes--;
+            if (voteType === 'DOWN') review.downVotes--;
+            review.userVote = null;
+          } 
+          // If user is changing their vote
+          else if (review.userVote) {
+            if (voteType === 'UP') {
+              review.upVotes++;
+              review.downVotes--;
+            } else {
+              review.upVotes++;
+              review.downVotes--;
+            }
+            review.userVote = voteType;
+          }
+          // If user is voting for the first time
+          else {
+            if (voteType === 'UP') review.upVotes++;
+            if (voteType === 'DOWN') review.downVotes++;
+            review.userVote = voteType;
+          }
+          
+          this.reviews[reviewIndex] = { ...review };
+        }
+      },
+      error: (error) => {
+        console.error('Error voting:', error);
+        // Handle error - maybe show error message
+      }
+    });
   }
-  // ... rest of the component methods remain the same
 }

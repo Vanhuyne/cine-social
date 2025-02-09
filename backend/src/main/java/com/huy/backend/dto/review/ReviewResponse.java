@@ -17,9 +17,11 @@ public class ReviewResponse {
     private String userDisplayName;
     private int rating;
     private String comment;
+    private Long upVotes;
+    private Long downVotes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+
     public static ReviewResponse convertToReviewResponse(Review review) {
         return ReviewResponse.builder()
                 .reviewId(review.getReviewId())
@@ -29,5 +31,17 @@ public class ReviewResponse {
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
                 .build();
+    }
+
+    // new constructor
+    public ReviewResponse(Review review, Long upVotes, Long downVotes) {
+        this.reviewId = review.getReviewId();
+        this.userDisplayName = review.getUser().getUsername();
+        this.rating = review.getRating();
+        this.comment = review.getComment();
+        this.createdAt = review.getCreatedAt();
+        this.updatedAt = review.getUpdatedAt();
+        this.upVotes = upVotes;
+        this.downVotes = downVotes;
     }
 }

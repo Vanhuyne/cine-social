@@ -1,71 +1,31 @@
-<div class="max-w-2xl mx-auto p-6 bg-gray-50">
-  <!-- Write Review Section -->
+<div class="mx-auto p-4 bg-gray-50 rounded-lg">
+  <!-- Write Review Button -->
   <div class="sticky top-0 bg-gray-50 z-10 pb-4">
-    <button 
-      (click)="toggleReviewForm()"
-      class="w-full bg-white border border-gray-200 rounded-lg p-4 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors duration-200"
-    >
-      <!-- User Avatar Placeholder -->
+    <button (click)="openReviewModal()"
+      class="w-full bg-white border border-gray-200 rounded-lg p-4 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors duration-200">
       <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
         <span class="text-gray-500 text-sm">
           {{ isLoggedIn ? (currentUser?.[0] | uppercase) : '?' }}
         </span>
       </div>
       <span class="text-gray-500">
-        {{ isLoggedIn 
-          ? (isFormVisible ? 'Cancel review' : 'What did you think about this movie?') 
-          : 'Sign in to write a review' 
-        }}
+        {{ isLoggedIn ? 'What did you think about this movie?' : 'Sign in to write a review' }}
       </span>
     </button>
   </div>
 
-  <!-- Review Form -->
-  <div 
-    *ngIf="isFormVisible && isLoggedIn"
-    class="bg-white shadow-md rounded-lg p-6 mb-6 animate-fade-in"
-  >
-    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" class="space-y-4">
-      <!-- Star Rating -->
-      <div class="flex items-center space-x-2 mb-4">
-        <div 
-          *ngFor="let star of [1,2,3,4,5]" 
-          (click)="setRating(star)"
-          class="cursor-pointer text-3xl transition-colors duration-200"
-          [ngClass]="{
-            'text-yellow-500 hover:text-yellow-600': star <= selectedRating,
-            'text-gray-300 hover:text-yellow-400': star > selectedRating
-          }"
-        >
-          {{ star <= selectedRating ? '★' : '☆' }}
-        </div>
-      </div>
-
-      <!-- Review Textarea -->
-      <textarea 
-        formControlName="comment" 
-        placeholder="Share your thoughts about the movie..." 
-        class="w-full p-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[120px] resize-none"
-      ></textarea>
-
-      <div class="flex justify-end">
-        <button 
-          type="submit" 
-          [disabled]="!reviewForm.valid || selectedRating === 0"
-          class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          Post Review
-        </button>
-      </div>
-    </form>
-  </div>
+   <!-- Review Modal -->
+   <app-review-modal
+   [isOpen]="isModalOpen"
+   [movieId]="movieId"
+   (closeModal)="closeReviewModal()"
+   (submitReview)="handleReviewSubmit($event)"
+ ></app-review-modal>
 
   <!-- Reviews Feed -->
   <div class="space-y-4">
-    <div 
-      *ngFor="let review of reviews" 
-      class="bg-white rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 animate-fade-in"
-    >
+    <div *ngFor="let review of reviews"
+      class="bg-white rounded-lg p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 animate-fade-in">
       <!-- Review Header -->
       <div class="flex items-start justify-between mb-4">
         <div class="flex items-center space-x-3">
@@ -78,40 +38,79 @@
             <small class="text-gray-500">{{ review.createdAt | date:'medium' }}</small>
           </div>
         </div>
-        
+
         <!-- Rating -->
         <div class="flex items-center space-x-1">
-          <span 
-            *ngFor="let star of [1,2,3,4,5]"
-            class="text-xl"
-            [ngClass]="{
+          <span *ngFor="let star of [1,2,3,4,5]" class="text-xl" [ngClass]="{
               'text-yellow-500': star <= review.rating,
               'text-gray-300': star > review.rating
-            }"
-          >★</span>
+            }">★</span>
         </div>
       </div>
 
       <!-- Review Content -->
       <p class="text-gray-700 leading-relaxed">{{ review.comment }}</p>
+      <!-- Voting Section -->
+  <div class="flex items-center space-x-4 pt-3 border-t">
+    <!-- Upvote -->
+    <button 
+      (click)="handleVote(review.reviewId, 'UP')"
+      class="flex items-center space-x-1 text-gray-500 hover:text-cyan-500 transition-colors duration-200"
+      [ngClass]="{'text-cyan-500': review.userVote === 'UP'}">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+        class="h-5 w-5" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor">
+        <path stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M5 15l7-7 7 7" />
+      </svg>
+      <span class="text-sm font-medium">{{ review.upVotes || 0 }}</span>
+    </button>
+
+    <!-- Downvote -->
+    <button 
+      (click)="handleVote(review.reviewId, 'DOWN')"
+      class="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors duration-200"
+      [ngClass]="{'text-red-500': review.userVote === 'DOWN'}">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+        class="h-5 w-5" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor">
+        <path stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M19 9l-7 7-7-7" />
+      </svg>
+      <span class="text-sm font-medium">{{ review.downVotes || 0 }}</span>
+    </button>
+  </div>
+    </div>
+    
+    <!-- Update this part in the template -->
+    <div *ngIf="isLoading" class="flex justify-center py-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
     </div>
 
-    <!-- Update this part in the template -->
-<div *ngIf="isLoading" class="flex justify-center py-4">
-  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-</div>
+    <!-- See More Button -->
+    <div class="text-center mt-4" *ngIf="!isLoading && currentPage < totalPages - 1">
+      <button (click)="loadMore()"
+        class="bg-cyan-500 px-8 py-3 rounded-full hover:bg-cyan-600 transition-colors duration-300">
+        See More
+      </button>
+    </div>
 
-<!-- Sentinel Element for Infinite Scroll -->
-<div class="sentinel h-4" *ngIf="currentPage < totalPages - 1"></div>
+    <!-- No More Reviews Message -->
+    <div *ngIf="currentPage >= totalPages - 1 && reviews.length > 0" class="text-center py-4 text-gray-500">
+      No more reviews to load
+    </div>
 
-<!-- No More Reviews Message -->
-<div *ngIf="currentPage >= totalPages - 1 && reviews.length > 0" class="text-center py-4 text-gray-500">
-  No more reviews to load
-</div>
-
-<!-- Empty State -->
-<div *ngIf="!isLoading && reviews.length === 0" class="text-center py-8">
-  <p class="text-gray-500">No reviews yet. Be the first to share your thoughts!</p>
-</div>
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && reviews.length === 0" class="text-center py-8">
+      <p class="text-gray-500">No reviews yet. Be the first to share your thoughts!</p>
+    </div>
   </div>
 </div>

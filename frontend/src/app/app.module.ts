@@ -23,6 +23,7 @@ import { CallbackComponent } from './components/callback/callback.component';
 import { HeroComponent } from './components/hero/hero.component';
 import { HomeComponent } from './components/home/home.component';
 import { ReviewComponent } from './components/review/review.component';
+import { ReviewModalComponent } from './components/review/review-modal/review-modal.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ReviewComponent } from './components/review/review.component';
     HeroComponent,
     HomeComponent,
     ReviewComponent,
+    ReviewModalComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 package com.huy.backend.service;
 
 import com.huy.backend.dto.user.*;
+import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.exception.UserAlreadyExistsException;
 import com.huy.backend.models.Roles;
 import com.huy.backend.models.User;
@@ -79,9 +80,14 @@ public class UserService {
     }
 
     public UserProfileDTO getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+        User user = getAuthCurrent();
         return mapUserToDTO(user);
+    }
+
+    public User getAuthCurrent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     private User mapRegisterToUser(UserRegister userRegister) {

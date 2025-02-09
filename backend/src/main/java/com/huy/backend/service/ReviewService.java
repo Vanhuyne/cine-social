@@ -6,39 +6,38 @@ import com.huy.backend.exception.ResourceNotFoundException;
 import com.huy.backend.models.Movie;
 import com.huy.backend.models.Review;
 import com.huy.backend.models.User;
+import com.huy.backend.models.Vote;
 import com.huy.backend.repository.MovieRepo;
 import com.huy.backend.repository.ReviewRepo;
-import com.huy.backend.repository.UserRepo;
+import com.huy.backend.repository.VoteRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepo reviewRepo;
-    private final UserRepo userRepo;
+    private final UserService userService;
     private final MovieRepo movieRepo;
+    private final VoteRepo voteRepo;
 
     public Page<ReviewResponse> getReviewsByMovieId(Long movieId, int page, int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        Page<ReviewResponse> reviewDTOs = reviewRepo.findByMovie_MovieId(movieId, pageable)
-                .map(ReviewResponse::convertToReviewResponse);
-        return reviewDTOs;
+        Page<Review> reviewPage = reviewRepo.findByMovie_MovieId(movieId, pageable);
+        return reviewPage.map(review -> {
+            Long upVotes = voteRepo.countByReviewAndVoteType(review, Vote.VoteType.UP);
+            Long downVotes = voteRepo.countByReviewAndVoteType(review, Vote.VoteType.DOWN);
+            return new ReviewResponse(review, upVotes, downVotes);
+        });
     }
 
     // add review
     public ReviewResponse createReview(ReviewRequest reviewRequest) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
+        User user = userService.getAuthCurrent();
         Movie movie = movieRepo.findById(reviewRequest.getMovieId())
                 .orElseThrow(() -> new ResourceNotFoundException("Movie not found"));
 
@@ -73,4 +72,6 @@ public class ReviewService {
         );
         reviewRepo.delete(review);
     }
+
+
 }

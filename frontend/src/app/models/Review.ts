@@ -10,6 +10,9 @@ export interface ReviewResponse{
     comment: string;
     createdAt: string;
     updatedAt: string;
+    upVotes : number;
+    downVotes : number;
+    userVote?: 'UP' | 'DOWN' | null;
 }
 export interface PageResponse<T> {
     content: T[];

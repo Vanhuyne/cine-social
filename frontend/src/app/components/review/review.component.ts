@@ -78,7 +78,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (pageResponse: PageResponse<ReviewResponse>) => {
           this.reviews = this.reviews.concat(pageResponse.content);
-          console.log('Reviews:', this.reviews);
+          // console.log('Reviews:', this.reviews);s
           this.totalPages = pageResponse.page.totalPages;
           this.isLoading = false;
         },
@@ -106,10 +106,13 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (review) => {
           this.reviews.unshift(review);
+          console.log('Review:', reviewRequest.rating);
           this.closeReviewModal();
         },
         error: (err) => console.error('Error submitting review:', err)
       });
+
+    
   }
 
   handleVote(reviewId: number, voteType: 'UP' | 'DOWN') {

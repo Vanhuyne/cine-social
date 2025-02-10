@@ -16,15 +16,7 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
 
     Optional<Review> findByUser_UserIdAndMovie_MovieId(Long userId, Long movieId);
 
-//    @Query("""
-//                SELECT new com.huy.backend.dto.vote.ReviewVoteCount(
-//                    r.id,
-//                    COUNT(CASE WHEN v.voteType = 'UP' THEN 1 END),
-//                    COUNT(CASE WHEN v.voteType = 'DOWN' THEN 1 END)
-//                )
-//                FROM Review r
-//                LEFT JOIN Vote v ON r.id = v.review.id
-//                GROUP BY r.id
-//            """)
-//    List<ReviewVoteCount> findReviewVoteCounts();
+    @Query("SELECT r FROM Review r ORDER BY r.createdAt DESC" +
+            " LIMIT 5")
+    Optional<Review> findMostRecentReview();
 }

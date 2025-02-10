@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ReviewResponse {
     private Long reviewId;
     private String userDisplayName;
-    private int rating;
+    private Double rating;
     private String comment;
     private Long upVotes;
     private Long downVotes;

@@ -35,13 +35,8 @@
           </div>
         </div>
 
-        <!-- Rating -->
-        <div class="flex items-center space-x-1">
-          <span *ngFor="let star of [1,2,3,4,5]" class="text-xl" [ngClass]="{
-              'text-yellow-500': star <= review.rating,
-              'text-gray-300': star > review.rating
-            }">★</span>
-        </div>
+        <!-- Rating Display using new component -->
+        <app-start [rating]="review.rating"></app-start>
       </div>
 
       <!-- Review Content -->

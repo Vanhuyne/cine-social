@@ -24,6 +24,7 @@ import { HeroComponent } from './components/hero/hero.component';
 import { HomeComponent } from './components/home/home.component';
 import { ReviewComponent } from './components/review/review.component';
 import { ReviewModalComponent } from './components/review/review-modal/review-modal.component';
+import { StartComponent } from './components/review/start/start.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { ReviewModalComponent } from './components/review/review-modal/review-mo
     HomeComponent,
     ReviewComponent,
     ReviewModalComponent,
+    StartComponent,
   ],
   imports: [
     BrowserModule,

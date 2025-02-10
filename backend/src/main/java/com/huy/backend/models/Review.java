@@ -28,7 +28,7 @@ public class Review {
     private Movie movie;
 
     @Column(nullable = false)
-    private int rating;
+    private Double rating;
 
     @Column(length = 2000)
     private String comment;
@@ -38,5 +38,5 @@ public class Review {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+
 }

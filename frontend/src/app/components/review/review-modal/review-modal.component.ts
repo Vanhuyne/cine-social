@@ -22,8 +22,16 @@ export class ReviewModalComponent {
     });
   }
 
-  setRating(rating: number): void {
-    this.selectedRating = rating;
+  handleStarHover(event: MouseEvent, starIndex: number) {
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const width = rect.width;
+    const x = event.clientX - rect.left;
+    this.selectedRating = x < width / 2 ? starIndex - 0.5 : starIndex;
+  }
+
+  setRating(event: MouseEvent, starIndex: number) {
+    this.handleStarHover(event, starIndex);
   }
 
   close(): void {
@@ -38,6 +46,7 @@ export class ReviewModalComponent {
         rating: this.selectedRating,
         comment: this.reviewForm.value.comment
       };
+      // console.log(review.rating);
       this.submitReview.emit(review);
       this.reset();
     }
@@ -48,5 +57,4 @@ export class ReviewModalComponent {
     this.selectedRating = 0;
   }
 
-  
 }

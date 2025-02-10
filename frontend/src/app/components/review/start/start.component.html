@@ -1,0 +1,26 @@
+<div class="flex items-center space-x-1">
+    <div *ngFor="let star of [1,2,3,4,5]" class="relative">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background star (gray) -->
+        <path 
+          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          class="text-gray-200"
+          fill="currentColor"/>
+        
+        <!-- Filled star (yellow) with clipping for half stars -->
+        <mask [attr.id]="'star-mask-' + star">
+          <rect
+            x="0"
+            y="0"
+            [attr.width]="rating >= star ? '24' : rating >= star - 0.5 ? '12' : '0'"
+            height="24"
+            fill="white"/>
+        </mask>
+        <path
+          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          class="text-yellow-400"
+          fill="currentColor"
+          [attr.mask]="'url(#star-mask-' + star + ')'"/>
+      </svg>
+    </div>
+  </div>

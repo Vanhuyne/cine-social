@@ -1,0 +1,48 @@
+/* Star Rating Container */
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  /* Wrapper for each star */
+  .star-wrapper {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+  }
+  
+  /* Full Star */
+  .star {
+    font-size: 32px;
+    color: #d1d5db; /* Default gray */
+    position: absolute;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  /* Left Half-Star */
+  .star.half {
+    width: 50%;
+    overflow: hidden;
+    left: 0;
+  }
+  
+  /* Full-Star */
+  .star.full {
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* When Selected */
+  .star.active {
+    color: #facc15; /* Bright Yellow */
+  }
+  
+  /* Hover Effect */
+  .star:hover {
+    transform: scale(1.2);
+    color: #fbbf24; /* Slightly different yellow */
+  }
+  

@@ -2,10 +2,7 @@ package com.huy.backend.dto.review;
 
 import com.huy.backend.models.Review;
 import com.huy.backend.models.Vote;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +20,8 @@ public class ReviewResponse {
     private Vote.VoteType userVote;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private MovieInfo movie;
+    private Long totalVotes;
 
     public static ReviewResponse convertToReviewResponse(Review review) {
         return ReviewResponse.builder()
@@ -46,5 +45,14 @@ public class ReviewResponse {
         this.upVotes = upVotes;
         this.downVotes = downVotes;
         this.userVote = userVote;
+    }
+
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class MovieInfo {
+        private Long movieId;
+        private String title;
     }
 }

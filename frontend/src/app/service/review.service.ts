@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PageResponse, ReviewRequest, ReviewResponse } from '../models/Review';
+import { PageResponse, ReviewRecentResponse, ReviewRequest, ReviewResponse } from '../models/Review';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +31,10 @@ export class ReviewService {
 
   deleteReview(reviewId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${reviewId}`);
+  }
+
+  getRecentReviews(): Observable<ReviewRecentResponse[]> {
+    return this.http.get<ReviewRecentResponse[]>(`${this.baseUrl}/recent`)
   }
 
 }

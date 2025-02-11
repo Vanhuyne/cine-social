@@ -25,6 +25,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ReviewComponent } from './components/review/review.component';
 import { ReviewModalComponent } from './components/review/review-modal/review-modal.component';
 import { StartComponent } from './components/review/start/start.component';
+import { ReviewRecentComponent } from './components/review/review-recent/review-recent.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { StartComponent } from './components/review/start/start.component';
     ReviewComponent,
     ReviewModalComponent,
     StartComponent,
+    ReviewRecentComponent,
   ],
   imports: [
     BrowserModule,

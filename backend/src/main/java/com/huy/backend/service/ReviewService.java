@@ -1,5 +1,6 @@
 package com.huy.backend.service;
 
+import com.huy.backend.dto.review.ReviewRecentResponse;
 import com.huy.backend.dto.review.ReviewRequest;
 import com.huy.backend.dto.review.ReviewResponse;
 import com.huy.backend.exception.ResourceNotFoundException;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,21 @@ public class ReviewService {
         ));
     }
 
+    // get 5 review recent
+    public List<ReviewRecentResponse> get5MostReviewRecent() {
+        List<Review> review = reviewRepo.findTop5MostRecentReviewsByMovie();
+        return review.stream().map(
+                        review1 -> {
+                            return new ReviewRecentResponse(
+                                    review1,
+                                    voteRepo.countByReviewAndVoteType(review1, Vote.VoteType.UP),
+                                    voteRepo.countByReviewAndVoteType(review1, Vote.VoteType.DOWN),
+                                    new ReviewResponse.MovieInfo(review1.getMovie().getMovieId(), review1.getMovie().getTitle())
+                            );
+                        })
+                .collect(Collectors.toList());
+    }
+
     // add review
     public ReviewResponse createReview(ReviewRequest reviewRequest) {
         User user = userService.getAuthCurrent();
@@ -55,6 +73,7 @@ public class ReviewService {
 
         return ReviewResponse.convertToReviewResponse(reviewRepo.save(review));
     }
+
 
     // update review
     public ReviewResponse updateReview(Long reviewId, ReviewRequest reviewRequest) {

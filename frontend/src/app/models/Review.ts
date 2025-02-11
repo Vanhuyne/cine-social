@@ -14,6 +14,23 @@ export interface ReviewResponse{
     downVotes : number;
     userVote?: 'UP' | 'DOWN' | null;
 }
+
+export interface ReviewRecentResponse {
+    reviewId: number;
+    userDisplayName: string;
+    userAvatar?: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    totalVotes: number;
+    movie : MovieInfo;
+}
+
+export interface MovieInfo {
+    movieId: number;
+    title: string;
+    // poster: string;
+}
 export interface PageResponse<T> {
     content: T[];
     page: {

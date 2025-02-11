@@ -1,0 +1,62 @@
+<div class="py-20 text-white mx-auto px-24">
+  <h3 class="text-4xl font-['Bebas_Neue'] mb-8">Recent Reviews</h3>
+
+  <!-- Grid Layout -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div *ngFor="let review of reviews" 
+         class="relative bg-gray-800/50 backdrop-blur-xl border border-gray-700/40 rounded-xl p-6 
+                shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-2 group">
+
+      <!-- Neon Border Glow (Fixed) -->
+      <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-10 
+                  group-hover:opacity-40 rounded-xl blur-lg transition-all duration-300 
+                  pointer-events-none"></div>
+
+      <!-- User Info -->
+      <div class="flex items-center mb-4 relative">
+        <img [src]="review.userAvatar || 'https://source.unsplash.com/random/50x50/?avatar'" 
+             [alt]="review.userDisplayName"
+             class="w-14 h-14 rounded-full mr-4 object-cover border-2 border-cyan-500 shadow-md 
+                    transition-transform duration-300 group-hover:scale-105">
+
+        <div>
+          <h4 class="text-lg font-semibold">{{ review.userDisplayName }}</h4>
+          <p class="text-sm text-gray-400">{{ review.createdAt |  date:'dd MMM' }}</p>
+        </div>
+      </div>
+
+      <!-- Movie Title (Clickable) -->
+      <div class="relative">
+        <span class="text-gray-400 text-sm">reviewed</span>
+        <a [routerLink]="['/movie', review.movie.movieId]" 
+           class="text-cyan-400 ml-2 hover:text-cyan-300 transition-colors duration-200 text-sm font-medium">
+          {{ review.movie.title }}
+        </a>
+      </div>
+
+      <!-- Rating -->
+      <div class="flex items-center my-2">
+        <app-start [rating]="review.rating"></app-start>
+      </div>
+
+      <!-- Comment -->
+      <p class="text-gray-300">{{ review.comment }}</p>
+
+      <!-- Votes -->
+      <div class="mt-4 flex justify-between items-center text-gray-400">
+        <p class="text-sm">Votes: {{ review.totalVotes }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && reviews.length === 0" class="text-center py-8 text-gray-400">
+    No reviews available
+  </div>
+</div>

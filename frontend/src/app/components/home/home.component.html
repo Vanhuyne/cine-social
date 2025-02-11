@@ -1,3 +1,7 @@
 <app-hero></app-hero>
 <app-movie-list *ngIf="showMovieList"></app-movie-list>
+<app-review-recent 
+        [reviews]="recentReviews"
+        [isLoading]="isLoading">
+      </app-review-recent>
 <app-movie-gird *ngIf="showMovieGird"></app-movie-gird>

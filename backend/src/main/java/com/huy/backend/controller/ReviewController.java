@@ -1,5 +1,6 @@
 package com.huy.backend.controller;
 
+import com.huy.backend.dto.review.ReviewRecentResponse;
 import com.huy.backend.dto.review.ReviewRequest;
 import com.huy.backend.dto.review.ReviewResponse;
 import com.huy.backend.service.ReviewService;
@@ -39,5 +40,10 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<List<ReviewRecentResponse>> get5MostReviewRecent() {
+        return new ResponseEntity<>(reviewService.get5MostReviewRecent(), HttpStatus.OK);
     }
 }

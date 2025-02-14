@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -31,6 +32,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+    private final FileStorageService fileStorageService;
 
     @Transactional
     public UserRegistrationResponseDTO register(UserRegister userRegister) {
@@ -89,6 +91,37 @@ public class UserService {
         return userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
+    public UserProfileDTO updateProfile(UpdateUserRequest updateUserRequest) {
+        User user = getAuthCurrent();
+
+        // validate email
+        if (!user.getEmail().equals(updateUserRequest.getEmail()) && userRepository.existsByEmail(updateUserRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+        // validate username
+        if (!user.getUsername().equals(updateUserRequest.getUsername()) && userRepository.existsByUsername(updateUserRequest.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
+
+        // Handle profile picture upload
+        MultipartFile profilePicture = updateUserRequest.getProfilePicture();
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            String profilePicturePath = fileStorageService.storeFile(profilePicture);
+
+            if (user.getProfilePicture() != null) {
+                fileStorageService.deleteFile(user.getProfilePicture());
+            }
+            user.setProfilePicture(profilePicturePath);
+        }
+
+        user.setUsername(updateUserRequest.getUsername());
+        user.setEmail(updateUserRequest.getEmail());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        return mapUserToDTO(userRepository.save(user));
+    }
+
 
     private User mapRegisterToUser(UserRegister userRegister) {
         return User.builder()

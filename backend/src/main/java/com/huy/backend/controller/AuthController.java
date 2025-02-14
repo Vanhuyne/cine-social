@@ -69,12 +69,7 @@ public class AuthController {
                 })
                 .orElseThrow(() -> new TokenRefreshException("Refresh token not found!"));
     }
-
-    // get current user
-    @PostMapping("/current-user")
-    public ResponseEntity<UserProfileDTO> getCurrentUser() {
-        return ResponseEntity.ok(userService.getCurrentUser());
-    }
+    
 
     @PostMapping("/google")
     public ResponseEntity<?> authenticateGoogle(@RequestBody Map<String, String> payload) {
@@ -101,7 +96,7 @@ public class AuthController {
                 .block();
         // get user by email
         User user = userService.getUserByEmail(userInfo.getEmail());
-        
+
         String accessToken = jwtUtil.generateToken(user.getUsername(), user.getRoles());
         String refreshToken = refreshTokenService.createOrUpdateRefreshToken(user).getToken();
 

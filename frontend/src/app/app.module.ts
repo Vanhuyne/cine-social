@@ -26,6 +26,7 @@ import { ReviewComponent } from './components/review/review.component';
 import { ReviewModalComponent } from './components/review/review-modal/review-modal.component';
 import { StartComponent } from './components/review/start/start.component';
 import { ReviewRecentComponent } from './components/review/review-recent/review-recent.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { ReviewRecentComponent } from './components/review/review-recent/review-
     ReviewModalComponent,
     StartComponent,
     ReviewRecentComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

@@ -92,7 +92,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    public UserProfileDTO updateProfile(UpdateUserRequest updateUserRequest) {
+    public UpdateUserResponse updateProfile(UpdateUserRequest updateUserRequest) {
         User user = getAuthCurrent();
 
         // validate email
@@ -119,7 +119,12 @@ public class UserService {
         user.setEmail(updateUserRequest.getEmail());
         user.setUpdatedAt(LocalDateTime.now());
 
-        return mapUserToDTO(userRepository.save(user));
+        User updateUser = userRepository.save(user);
+        return UpdateUserResponse.builder()
+                .message("Profile updated successfully")
+                .accessToken(jwtUtil.generateToken(updateUser.getUsername(), updateUser.getRoles()))
+                .refreshToken(refreshTokenService.createOrUpdateRefreshToken(updateUser).getToken())
+                .build();
     }
 
 

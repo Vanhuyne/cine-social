@@ -1,6 +1,7 @@
 package com.huy.backend.controller;
 
 import com.huy.backend.dto.user.UpdateUserRequest;
+import com.huy.backend.dto.user.UserProfileDTO;
 import com.huy.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class UserController {
         }
     }
 
-    
+
     @GetMapping("/image/{fileName:.+}")
     public ResponseEntity<Resource> getProfileImageAsResource(@PathVariable String fileName) {
         try {
@@ -54,5 +55,10 @@ public class UserController {
         }
     }
 
+    // get current user
+    @GetMapping("/me")
+    public ResponseEntity<UserProfileDTO> getCurrentUser() {
+        return ResponseEntity.ok(userService.getCurrentUser());
+    }
 
 }

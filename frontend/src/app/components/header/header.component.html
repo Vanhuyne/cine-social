@@ -1,25 +1,40 @@
-<header class="text-white ">
+<header class="text-white">
   <nav class="fixed w-full z-50 bg-gray-900/80 backdrop-blur-0 px-24">
-    <div class="container mx-auto  py-4 flex justify-between items-center">
+    <div class="container mx-auto py-4 flex justify-between items-center">
+      <!-- Logo -->
       <h1 class="text-3xl font-['Bebas_Neue'] tracking-wide">CineSocial</h1>
-      <div class="space-x-6">
+
+      <!-- Navigation Links & User Actions -->
+      <div class="flex items-center space-x-6">
         <a href="#" class="hover:text-cyan-400 transition-colors">Discover</a>
         <a href="#" class="hover:text-cyan-400 transition-colors">Community</a>
         <a href="#" class="hover:text-cyan-400 transition-colors">Lists</a>
-        <ng-container *ngIf="!(authService.getCurrentUser() | async); else userMenu">
-          <button class="bg-cyan-500 px-6 py-2 rounded-full hover:bg-cyan-600 transition-colors"
-            routerLink="/login">
+        <!-- Show Sign in if not logged in -->
+        <ng-container *ngIf="!(authService.isLoggedIn() | async); else userMenu">
+          <button class="bg-cyan-500 px-6 py-2 rounded-full hover:bg-cyan-600 transition-colors" routerLink="/login">
             Sign in
           </button>
         </ng-container>
 
+        <!-- User Menu -->
         <ng-template #userMenu>
-          <div class="relative inline-block text-left">
+          <div class="relative inline-block text-left" *ngIf="currentUser">
             <button type="button" (click)="toggleDropdown($event)"
               class="flex items-center space-x-2 text-white focus:outline-none">
-              <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                <span class="text-sm">{{ (authService.getCurrentUser() | async)?.charAt(0) }}</span>
+              <!-- Updated Avatar Container with increased size -->
+              <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img *ngIf="currentUser.profilePicture; else defaultAvatar" 
+                     [src]="getProfileImageUrl(currentUser.profilePicture)" 
+                     alt="Profile" 
+                     class="object-cover w-full h-full" />
               </div>
+              <!-- Default Avatar if no profile picture -->
+              <ng-template #defaultAvatar>
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                  <span class="text-sm">{{ currentUser.username.charAt(0) }}</span>
+                </div>
+              </ng-template>
+              <!-- Dropdown Arrow -->
               <svg [class.rotate-180]="isDropdownOpen" class="h-4 w-4 transition-transform duration-200"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
@@ -50,7 +65,7 @@
                 </a>
                 <button *ngIf="isAdmin$ | async"
                   class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
-                  routerLink="/admin-dashbard">
+                  routerLink="/admin-dashboard">
                   Admin Dashboard
                 </button>
                 <button (click)="logout()"
@@ -66,16 +81,7 @@
             </div>
           </div>
         </ng-template>
-        <!-- <button class="bg-cyan-500 px-6 py-2 rounded-full hover:bg-cyan-600 transition-colors">Sign In</button> -->
       </div>
     </div>
   </nav>
-
-  <!-- Hero Section -->
-  
-  <!-- <app-login *ngIf="showLoginModal" (closeModal)="closeLoginModal()" (openRegister)="switchToRegister()">
-  </app-login>
-
-  <app-register *ngIf="showRegisterModal" (closeModal)="closeRegisterModal()" (openLogin)="switchToLogin()">
-    ></app-register> -->
 </header>

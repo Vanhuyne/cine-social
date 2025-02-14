@@ -10,6 +10,7 @@ import { MovieGirdComponent } from './components/movie/movie-gird/movie-gird.com
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'movie/:movieId', component: MovieDetailComponent },
   { path: 'admin-dashbard', component: AdminDashbardComponent, canActivate: [AuthGuard], data: { roles: ['ROLE_ADMIN'] } },
   { path: 'watch-list', component: WatchListComponent ,canActivate: [AuthGuard] },
+  { path: 'profile', component: ProfileComponent ,canActivate: [AuthGuard] },
   { path: 'explore', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

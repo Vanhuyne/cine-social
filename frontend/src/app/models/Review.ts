@@ -6,6 +6,7 @@ export interface ReviewRequest {
 export interface ReviewResponse{
     reviewId: number;
     userDisplayName: string;
+    userAvatar?: string;
     rating: number;
     comment: string;
     createdAt: string;

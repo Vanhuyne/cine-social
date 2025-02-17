@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class ReviewRecentResponse {
     private Long reviewId;
     private String userDisplayName;
+    private String userAvatar;
     private Double rating;
     private String comment;
     private LocalDateTime createdAt;
@@ -25,6 +26,7 @@ public class ReviewRecentResponse {
     public ReviewRecentResponse(Review review, Long upVotes, Long downVotes, ReviewResponse.MovieInfo movie) {
         this.reviewId = review.getReviewId();
         this.userDisplayName = review.getUser().getUsername();
+        this.userAvatar = review.getUser().getProfilePicture();
         this.rating = review.getRating();
         this.comment = review.getComment();
         this.createdAt = review.getCreatedAt();

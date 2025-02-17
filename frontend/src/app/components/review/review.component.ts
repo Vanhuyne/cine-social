@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { VoteService } from '../../service/vote.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-review',
@@ -172,5 +173,10 @@ export class ReviewComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  getProfileImageUrl(fileName: string | undefined): string {
+    if (!fileName) return '';
+    return `${environment.apiUrl}/users/image/${fileName}`;
   }
 }

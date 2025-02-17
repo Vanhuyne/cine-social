@@ -6,6 +6,7 @@
       <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
         <span class="text-gray-500 text-sm">
           {{ isLoggedIn ? (currentUser?.[0] | uppercase) : '?' }}
+          
         </span>
       </div>
       <span class="text-gray-500">
@@ -26,12 +27,17 @@
       <div class="flex items-start justify-between mb-4">
         <div class="flex items-center space-x-3">
           <!-- User Avatar -->
-          <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <span class="text-gray-500 text-sm">{{ review.userDisplayName[0] | uppercase }}</span>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-800">{{ review.userDisplayName }}</h4>
-            <small class="text-gray-500">{{ review.createdAt | date:'medium' }}</small>
+          <div class="w-10 h-10 rounded-full overflow-hidden">
+            <img *ngIf="review.userAvatar; else defaultAvatar"
+                 [src]="getProfileImageUrl(review.userAvatar)"
+                 [alt]="review.userDisplayName"
+                 class="w-full h-full object-cover"
+                 >
+            <ng-template #defaultAvatar>
+              <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-500 text-sm">{{ review.userDisplayName[0] | uppercase }}</span>
+              </div>
+            </ng-template>
           </div>
         </div>
 

@@ -23,10 +23,9 @@
               class="flex items-center space-x-2 text-white focus:outline-none">
               <!-- Updated Avatar Container with increased size -->
               <div class="w-10 h-10 rounded-full overflow-hidden">
-                <img *ngIf="currentUser.profilePicture; else defaultAvatar" 
-                     [src]="getProfileImageUrl(currentUser.profilePicture)" 
-                     alt="Profile" 
-                     class="object-cover w-full h-full" />
+                <img *ngIf="authService.isLoggedIn() && currentUser.profilePicture; else defaultAvatar"
+                  [src]="getProfileImageUrl(currentUser.profilePicture)" alt="Profile"
+                  class="object-cover w-full h-full" />
               </div>
               <!-- Default Avatar if no profile picture -->
               <ng-template #defaultAvatar>

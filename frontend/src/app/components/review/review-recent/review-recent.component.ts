@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ReviewRecentResponse } from '../../../models/Review';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-review-recent',
@@ -13,6 +14,10 @@ export class ReviewRecentComponent {
 
   constructor(private router: Router) {}
 
+  getProfileImageUrl(fileName: string | undefined): string {
+      if (!fileName) return '';
+      return `${environment.apiUrl}/users/image/${fileName}`;
+    }
   // formatTime(date: Date): string {
   //   return formatDistanceToNow(new Date(date), { addSuffix: true });
   // }

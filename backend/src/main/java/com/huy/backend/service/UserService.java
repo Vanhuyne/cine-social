@@ -83,11 +83,13 @@ public class UserService {
 
     public UserProfileDTO getCurrentUser() {
         User user = getAuthCurrent();
+        log.info("User: {}", user.getEmail());
         return mapUserToDTO(user);
     }
 
     public User getAuthCurrent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Auth: {}", authentication.getName());
         return userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }

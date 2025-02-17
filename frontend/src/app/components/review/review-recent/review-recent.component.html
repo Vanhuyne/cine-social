@@ -14,7 +14,7 @@
 
       <!-- User Info -->
       <div class="flex items-center mb-4 relative">
-        <img [src]="review.userAvatar || 'https://source.unsplash.com/random/50x50/?avatar'" 
+        <img [src]="getProfileImageUrl(review.userAvatar)" 
              [alt]="review.userDisplayName"
              class="w-14 h-14 rounded-full mr-4 object-cover border-2 border-cyan-500 shadow-md 
                     transition-transform duration-300 group-hover:scale-105">

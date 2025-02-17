@@ -1,16 +1,17 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import {  map, Observable, Subscription } from 'rxjs';
 import { UserService } from '../../service/user.service';
 import { UserProfile } from '../../models/User';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnDestroy {
+export class HeaderComponent implements OnInit ,OnDestroy {
   currentUser: UserProfile | null = null;
   isLoggedIn$ = this.authService.isLoggedIn();
   isAdmin$ = this.authService.getUserRoles().pipe(
@@ -20,17 +21,28 @@ export class HeaderComponent implements OnDestroy {
   isDropdownOpen = false;
 
   private userSubscription?: Subscription;
+  private authSubscription?: Subscription;
 
   constructor(
     private router: Router,
     public authService: AuthService,
     private userService: UserService
   ) {
-    // this.authSubscription = this.authService.getCurrentUser().subscribe();
+    
   }
 
   ngOnInit(): void {
-    // Subscribe to get the full user details (including profilePicture)
+    // Subscribe to auth state changes
+    this.authSubscription = this.authService.isLoggedIn().subscribe(isLoggedIn => {
+      if (isLoggedIn) {
+        // Only fetch user profile when logged in
+        this.loadUserProfile();
+      } else {
+        this.currentUser = null;
+      }
+    });
+  }
+  private loadUserProfile(): void {
     this.userSubscription = this.userService.getCurrentUserProfile().subscribe({
       next: (user) => {
         this.currentUser = user;
@@ -41,14 +53,14 @@ export class HeaderComponent implements OnDestroy {
     });
   }
 
-  getProfileImageUrl(fileName: string): string {
-    return this.userService.getProfileImageUrl(fileName);
+  getProfileImageUrl(fileName: string | undefined): string {
+    if (!fileName) return '';
+    return `${environment.apiUrl}/users/image/${fileName}`;
   }
 
   ngOnDestroy() {
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
+    this.userSubscription?.unsubscribe();
+    this.authSubscription?.unsubscribe();
   }
 
   toggleDropdown(event: Event) {

@@ -26,7 +26,7 @@ CineSocial is a social media network for movie enthusiasts inspired by IMDb. Use
 - Angular CLI
 - Java 21
 - Maven
-- PostgreSQL
+- MySQL
 
 ### Setup
 

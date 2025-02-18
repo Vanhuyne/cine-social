@@ -3,11 +3,15 @@
   <div class="sticky top-0 bg-gray-50 z-10 pb-4">
     <button (click)="openReviewModal()"
       class="w-full bg-white border border-gray-200 rounded-lg p-4 text-left flex items-center space-x-3 hover:bg-gray-50 transition-colors duration-200">
-      <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-500 text-sm">
-          {{ isLoggedIn ? (currentUser?.[0] | uppercase) : '?' }}
-          
-        </span>
+      <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+        <ng-container *ngIf="isLoggedIn && currentUser?.profilePicture; else defaultAvatar">
+          <img [src]="getProfileImageUrl(currentUser?.profilePicture)" alt="User Avatar" class="w-full h-full object-cover">
+        </ng-container>
+        <ng-template #defaultAvatar>
+          <span class="text-gray-500 text-sm">
+            {{ isLoggedIn && currentUser ? (currentUser.username[0] | uppercase) : '?' }}
+          </span>
+        </ng-template>
       </div>
       <span class="text-gray-500">
         {{ isLoggedIn ? 'What did you think about this movie?' : 'Sign in to write a review' }}

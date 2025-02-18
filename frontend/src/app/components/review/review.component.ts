@@ -3,10 +3,12 @@ import { ReviewResponse, ReviewRequest, PageResponse } from '../../models/Review
 import { ReviewService } from '../../service/review.service';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { VoteService } from '../../service/vote.service';
 import { environment } from '../../environments/environment';
+import { UserProfile } from '../../models/User';
+import { UserService } from '../../service/user.service';
 
 @Component({
   selector: 'app-review',
@@ -26,13 +28,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   isLoggedIn = false;
-  currentUser: string | null = null;
+  currentUser: UserProfile | null = null;
 
   constructor(
     private reviewService: ReviewService,
     private authService: AuthService,
     private router: Router,
-    private voteService: VoteService
+    private voteService: VoteService,
+    private userService: UserService
   ) {
 
   }
@@ -54,10 +57,12 @@ export class ReviewComponent implements OnInit, OnDestroy {
         this.isLoggedIn = loggedIn;
       });
 
-    this.authService.getCurrentUser()
+    this.userService.getCurrentUserProfile()
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => this.currentUser = user);
   }
+
+
   openReviewModal(): void {
     if (!this.isLoggedIn) {
       this.router.navigate(['/login'], {
@@ -79,7 +84,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (pageResponse: PageResponse<ReviewResponse>) => {
           this.reviews = this.reviews.concat(pageResponse.content);
-          // console.log('Reviews:', this.reviews);s
           this.totalPages = pageResponse.page.totalPages;
           this.isLoading = false;
         },
@@ -106,7 +110,12 @@ export class ReviewComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (review) => {
-          this.reviews.unshift(review);
+          const reviewData = {
+              ...review,
+            userAvatar: this.currentUser?.profilePicture || '',  // Gán ảnh nếu có
+            userDisplayName: this.currentUser?.username || 'Anonymous'
+          }
+          this.reviews.unshift(reviewData);
           console.log('Review:', reviewRequest.rating);
           this.closeReviewModal();
         },

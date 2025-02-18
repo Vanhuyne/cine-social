@@ -24,16 +24,16 @@
           <img [src]="getImageUrl(movie.posterPath)" [alt]="movie.title" class="w-full rounded-lg shadow-xl">
 
           <div class="mt-6 space-y-4">
-            <button class="w-full py-3 bg-yellow-400 text-black font-bold rounded hover:bg-yellow-500 
+            <button class="w-full py-3 bg-cyan-500 text-white font-bold rounded hover:bg-cyan-600 
                            flex items-center justify-center space-x-2" (click)="openTrailer()">
               <span>▶</span>
               <span>Watch Trailer</span>
             </button>
 
-            <button class="w-full py-3 bg-zinc-800 text-white font-bold rounded hover:bg-zinc-700 
+            <button class="w-full py-3 bg-slate-200 text-cyan-500 font-bold rounded hover:bg-gray-300 
                            flex items-center justify-center space-x-2">
-              <span class="text-yellow-400">+</span>
-              <span>Add to Watchlist</span>
+              <span class="text-cyan-500">+</span>
+              <span>Add to List</span>
             </button>
           </div>
         </div>

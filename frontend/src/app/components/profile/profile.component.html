@@ -1,69 +1,68 @@
-<div class="max-w-xl mx-auto mt-20 p-6 bg-white rounded shadow-md pt-20">
-    <h2 class="text-2xl font-semibold mb-6">Update Profile</h2>
+<div class="max-w-lg mx-auto mt-20 p-8 bg-black rounded-xl shadow-lg text-white relative">
+  <!-- Profile Header -->
+  <div class="flex flex-col items-center">
+    <div class="relative w-32 h-32">
+      <img
+        [src]="profileImageUrl || 'https://via.placeholder.com/150'"
+        alt="Profile Preview"
+        class="w-32 h-32 rounded-full object-cover border-4 border-cyan-500 shadow-md"
+      />
+      <label for="profilePicture" class="absolute bottom-2 right-2 bg-gray-800 p-2 rounded-full cursor-pointer hover:bg-gray-700 transition">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M14.121 6.343l3.536 3.536m-7.07-1.415l3.535 3.535m-7.07-1.415l3.536 3.535M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-4.5 0V9.75a2.25 2.25 0 00-2.25-2.25H9.75A2.25 2.25 0 007.5 9.75V16.5m9 0H7.5" />
+        </svg>
+        <input type="file" id="profilePicture" (change)="onFileSelected($event)" class="hidden" />
+      </label>
+    </div>
+    <!-- <h2 class="text-xl font-semibold mt-4">@username</h2> -->
+    <!-- <p class="text-gray-400">Bio goes here...</p>
+    <div class="flex space-x-6 mt-4">
+      <div class="text-center">
+        <span class="font-semibold text-lg">120</span>
+        <p class="text-gray-400 text-sm">Review</p>
+      </div>
+      <div class="text-center">
+        <span class="font-semibold text-lg">5.2k</span>
+        <p class="text-gray-400 text-sm">Followers</p>
+      </div>
+      <div class="text-center">
+        <span class="font-semibold text-lg">500</span>
+        <p class="text-gray-400 text-sm">Following</p>
+      </div>
+    </div> -->
+  </div>
+
+  <!-- Form -->
+  <div class="mt-8">
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-      <!-- Username Field -->
       <div class="mb-4">
-        <label for="username" class="block text-gray-700">Username</label>
+        <label for="username" class="block text-gray-300">Username</label>
         <input
           type="text"
           id="username"
           formControlName="username"
           placeholder="Enter your username"
-          class="mt-1 block w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
+          class="mt-1 block w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
-        <div
-          *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
-          class="text-red-500 text-sm mt-1"
-        >
-          Username is required
-        </div>
       </div>
-  
-      <!-- Email Field -->
+
       <div class="mb-4">
-        <label for="email" class="block text-gray-700">Email</label>
+        <label for="email" class="block text-gray-300">Email</label>
         <input
           type="email"
           id="email"
           formControlName="email"
           placeholder="Enter your email"
-          class="mt-1 block w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        <div
-          *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
-          class="text-red-500 text-sm mt-1"
-        >
-          Enter a valid email
-        </div>
-      </div>
-  
-      <!-- Profile Picture Field -->
-      <div class="mb-4">
-        <label for="profilePicture" class="block text-gray-700">Profile Picture</label>
-        <input
-          type="file"
-          id="profilePicture"
-          (change)="onFileSelected($event)"
-          class="mt-1 block w-full"
+          class="mt-1 block w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-pink-500"
         />
       </div>
-  
-      <!-- Image Preview -->
-      <div class="mb-4" *ngIf="profileImageUrl">
-        <img
-          [src]="profileImageUrl"
-          alt="Profile Preview"
-          class="h-32 w-32 rounded-full object-cover mx-auto"
-        />
-      </div>
-  
-      <!-- Submit Button -->
+
       <button
         type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
+        class="w-full bg-cyan-600 mt-4 text-white py-2 rounded-md hover:bg-cyan-700 transition-all"
       >
         Update Profile
       </button>
     </form>
   </div>
-  
+</div>

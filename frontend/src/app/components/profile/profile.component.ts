@@ -32,13 +32,9 @@ export class ProfileComponent {
           email: user.email,
         });
         // If a profile picture exists, construct the image URL
-        if (user.profilePicture
-        ) {
+        if (user.profilePicture) {
           this.profileImageUrl = this.userService.getProfileImageUrl(user.profilePicture);
-        }
-        // console.log('User profile loaded:', user);
-        // console.log('Profile image URL:', this.profileImageUrl);
-      },
+        }},
       (error) => {
         console.error('Error loading user profile:', error);
       }

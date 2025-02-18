@@ -8,7 +8,7 @@
       <div class="flex items-center space-x-6">
         <a href="#" class="hover:text-cyan-400 transition-colors">Discover</a>
         <a href="#" class="hover:text-cyan-400 transition-colors">Community</a>
-        <a href="#" class="hover:text-cyan-400 transition-colors">Lists</a>
+        <a routerLink="/watch-list" class="hover:text-cyan-400 transition-colors">Watchlist</a>
         <!-- Show Sign in if not logged in -->
         <ng-container *ngIf="!(authService.isLoggedIn() | async); else userMenu">
           <button class="bg-cyan-500 px-6 py-2 rounded-full hover:bg-cyan-600 transition-colors" routerLink="/login">
@@ -55,13 +55,13 @@
                   </svg>
                   Profile
                 </a>
-                <a href="/watch-list" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                <!-- <a href="/watch-list" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   role="menuitem">
                   <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                   </svg>
                   Watchlist
-                </a>
+                </a> -->
                 <button *ngIf="isAdmin$ | async"
                   class="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
                   routerLink="/admin-dashboard">

@@ -57,9 +57,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
         this.isLoggedIn = loggedIn;
       });
 
-    this.userService.getCurrentUserProfile()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => this.currentUser = user);
+    if (this.isLoggedIn) {
+      this.userService.getCurrentUserProfile()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (user) => this.currentUser = user,
+          error: (err) => console.error('Error getting current user:', err)
+        });
+    }
   }
 
 

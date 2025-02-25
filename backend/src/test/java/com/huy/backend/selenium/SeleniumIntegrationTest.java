@@ -34,13 +34,13 @@ public class SeleniumIntegrationTest {
 
     @Test
     public void openGoogle() throws InterruptedException {
-        int repeatCount = 45;
-        List<String> listEmail = generateDotTrickEmails("thanvanhuyy1+19@gmail.com", repeatCount);
+        int repeatCount = 10;
+        List<String> listEmail = generateDotTrickEmails("thanvanh.uy.157@gmail.com", repeatCount);
         for (int i = 0; i < listEmail.size(); i++) {
             System.out.println("Starting iteration: " + i);
 
             String url = "https://avail.openedu.net/en/signup?next=/en/courses/course-avail-36779?ref_by=";
-            String code = "2fNRcZSemAIcf5b9";
+            String code = "f8cDS8gZorzy4Dgu";
             driver.get(url + code);
 
             // Create an explicit wait to handle the dynamic loading of elements
@@ -76,11 +76,6 @@ public class SeleniumIntegrationTest {
     }
 
     private static final String ALPHANUMERIC_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    // Example pool of emails
-    private static final String[] EMAIL_POOL = {
-
-    };
 
     public static List<String> generateDotTrickEmails(String email, int count) {
         if (!email.contains("@")) {

@@ -41,7 +41,7 @@ public class EmailVerify {
 
         // Enter Email
         WebElement emailField = driver.findElement(By.xpath("/html/body/div[1]/div[1]/div[2]/c-wiz/div/div[2]/div/div/div[1]/form/span/section/div/div/div[1]/div/div[1]/div/div[1]/input"));
-        emailField.sendKeys("thanvanhuyy1@gmail.com");
+        emailField.sendKeys("thanvanhuy157@gmail.com");
         driver.findElement(By.xpath("/html/body/div[1]/div[1]/div[2]/c-wiz/div/div[3]/div/div[1]/div/div/button")).click();
         Thread.sleep(5000); // Replace with WebDriverWait in a real scenario
 
@@ -75,7 +75,8 @@ public class EmailVerify {
         System.out.println("Number of messages in this thread: " + conversationItems.size());
 
         //  --- Step 4: Open a file for writing verification links ---
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("verification_links.txt"))) {
+        try (BufferedWriter writerLinks = new BufferedWriter(new FileWriter("verification_links.txt"));
+             BufferedWriter writerEmails = new BufferedWriter(new FileWriter("emails.txt"))) {
             int itemCount = conversationItems.size();
             for (int i = 0; i < itemCount; i++) {
                 // Re-fetch conversation items to avoid stale element issues
@@ -89,47 +90,35 @@ public class EmailVerify {
 
 
             }
+            // Retrieve verification links in the current conversation
             List<WebElement> verifyLinks = driver.findElements(By.xpath("//a[contains(@href,'verify')]"));
+            // Retrieve email addresses from <span> elements with an 'email' attribute
+            List<WebElement> emailElements = driver.findElements(By.xpath("//span[@class='g2' and @email]"));
             int linkCount = 0;
             for (WebElement link : verifyLinks) {
                 String href = link.getAttribute("href");
                 System.out.println("Verification URL " + linkCount++ + " " + href);
-                writer.write(href);
-                writer.newLine();
+                writerLinks.write(href);
+                writerLinks.newLine();
             }
-//
+            // Write all email addresses found
+            if (!emailElements.isEmpty()) {
+                for (WebElement emailElement : emailElements) {
+                    String email = emailElement.getAttribute("email");
+                    writerEmails.write(email);
+                    writerEmails.newLine();
+                    System.out.println("Email: " + email);
+                }
+            }
+
             // Optional pause before moving to the next conversation item
             Thread.sleep(1000);
         }
 
-        // Get the first 20 emails
-//        List<WebElement> emailRows = driver.findElements(By.xpath("//table[@class='F cf zt']/tbody/tr"));
-//
-//        // 6. Determine how many emails we can safely iterate through (up to 28)
-//        int maxEmails = Math.min(emailRows.size(), 28);
-//        System.out.println("Number of emails: " + maxEmails);
-//        for (int i = 0; i < maxEmails; i++) {
-//            // Click the ith email
-//            emailRows.get(i).click();
-//            Thread.sleep(3000); // Let the email body load
-//
-//            // 7. Try to find a "Verify" link in the email (href containing "verify")
-//            try {
-//                WebElement verifyEmailButton = driver.findElement(By.xpath("//a[contains(@href,'verify')]"));
-//                String verifyUrl = verifyEmailButton.getAttribute("href");
-//                System.out.println("Email " + (i + 1) + " - Verification URL: " + verifyUrl);
-//            } catch (NoSuchElementException e) {
-//                System.out.println("Email " + (i + 1) + " - No verification link found.");
-//            }
-//
-//            // 8. Navigate back to inbox to process the next email
-//            driver.navigate().back();
-//            Thread.sleep(3000);
-//
-//            // 9. Because navigating back can refresh the DOM, re-locate the email rows
-//            emailRows = driver.findElements(By.xpath("//table[@class='F cf zt']/tbody/tr"));
-//        }
     }
+
+//    AnhHo444137
+//    Huy01203055232
 
     @Test
     public void processVerificationLinks() throws IOException, InterruptedException {
@@ -147,29 +136,27 @@ public class EmailVerify {
             try {
                 // Begin processing the link
                 driver.get(link);
-                Thread.sleep(1500);
 
-                List<WebElement> verificationFailedElements = driver.findElements(
-                        By.xpath("//*[text()='Verification Failed']")
-                );
-                if (!verificationFailedElements.isEmpty()) {
-                    // If the "Verification Failed" message is found, skip this link.
+                WebElement elementBackHome = driver.findElement(By.xpath("/html/body/div/div[1]/div/div/button"));
+                String backHomeColor = elementBackHome.getCssValue("background-color");
+                String backHomeHexColor = rgbaToHex(backHomeColor);
+                if (backHomeHexColor.equalsIgnoreCase("#EF4444")) {
                     System.out.println("Verification failed for link: " + link);
                     iterator.remove();
                     updateVerificationLinksFile(links);
                     continue;
+                } else {
+                    elementBackHome.click();
+                    Thread.sleep(2000);
                 }
 
-                WebElement elementBackHome = driver.findElement(By.xpath("/html/body/div/div[1]/div/div/button"));
-                elementBackHome.click();
-                Thread.sleep(2000);
 
                 WebElement elementRefresh = driver.findElement(By.xpath("/html/body/header/div[2]/ul/li[1]/a"));
                 elementRefresh.click();
 
                 WebElement course = driver.findElement(By.xpath("/html/body/div/div/div/a/div"));
                 course.click();
-                Thread.sleep(2000);
+                Thread.sleep(1500);
 
                 // Save the original window handle before opening a new tab
                 String originalWindow = driver.getWindowHandle();
@@ -186,22 +173,15 @@ public class EmailVerify {
                         break;
                     }
                 }
-                Thread.sleep(3000);
 
                 // Perform actions in the new tab
-                WebElement elementGoToCourse = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/div[3]/div[2]/div/button[1]"));
-                elementGoToCourse.click();
-                Thread.sleep(3000);
-
-                WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(10));
-                WebElement iframeContainer = wait1.until(
-                        ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.aspect-video iframe"))
-                );
-                Thread.sleep(3000);
-
-                WebElement elementNext = driver.findElement(By.xpath("/html/body/div/div/div[1]/div[1]/div[2]/div/div/button[2]"));
-                elementNext.click();
-                Thread.sleep(5000);
+//                WebElement elementGoToCourse = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/div[3]/div[2]/div/button[1]"));
+//                elementGoToCourse.click();
+//                Thread.sleep(7000);
+//
+//                WebElement elementNext = driver.findElement(By.xpath("/html/body/div/div/div[1]/div[1]/div[2]/div/div/button[2]"));
+//                elementNext.click();
+//                Thread.sleep(3000);
 
                 // Close the new tab and switch back to the original
                 driver.close();
@@ -217,6 +197,85 @@ public class EmailVerify {
                 System.err.println("Error processing link: " + link + " - " + e.getMessage());
             }
         }
+    }
+
+    @Test
+    public void loginToGmailAndSuccessSocialTask() throws InterruptedException, IOException {
+
+        List<String> emails = readLinksFromFile("emails.txt");
+
+        // Use an iterator so that we can remove processed links safely.
+        Iterator<String> iterator = emails.iterator();
+        while (iterator.hasNext()) {
+            String email = iterator.next();
+            if (email.trim().isEmpty()) {
+                continue;
+            }
+
+            try {
+                // Begin processing the link
+                driver.get("https://avail.openedu.net/en/login?next=/en");
+                WebElement emailField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[1]/div/input"));
+                emailField.sendKeys(email);
+                WebElement passwordField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[2]/div/div/input"));
+                passwordField.sendKeys("Huy01203055232");
+                driver.findElement(By.xpath("/html/body/div/div[1]/div/form/button")).click();
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+                WebElement course = driver.findElement(By.xpath("/html/body/header/div[2]/ul/li[1]/a"));
+                course.click();
+
+                WebElement redirectCourse = driver.findElement(By.xpath("/html/body/div/div/div/a/div"));
+                redirectCourse.click();
+
+                String originalWindow = driver.getWindowHandle();
+//
+//                // Switch to the new tab
+                Set<String> windowHandles = driver.getWindowHandles();
+                for (String handle : windowHandles) {
+                    if (!handle.equals(originalWindow)) {
+                        driver.switchTo().window(handle);
+                        break;
+                    }
+                }
+
+                WebElement elementGoToCourse = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/button"));
+                elementGoToCourse.click();
+
+                // switch to the new tab (tab 3)
+                Set<String> windowHandles2 = driver.getWindowHandles();
+                for (String handle : windowHandles2) {
+                    if (!handle.equals(originalWindow)) {
+                        driver.switchTo().window(handle);
+                        break;
+                    }
+                }
+
+                WebElement startGame = driver.findElement(By.xpath("/html/body/div/div/div/div[3]/div"));
+                startGame.click();
+
+                Thread.sleep(10000);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            // Enter Email
+
+        }
+
+    }
+
+
+    static String rgbaToHex(String rgba) {
+        // Extract RGB values from rgba(r, g, b, a)
+        String[] numbers = rgba.replace("rgba(", "").replace(")", "").split(", ");
+        int r = Integer.parseInt(numbers[0]);
+        int g = Integer.parseInt(numbers[1]);
+        int b = Integer.parseInt(numbers[2]);
+
+        // Convert to Hex
+        return String.format("#%02X%02X%02X", r, g, b);
     }
 
     /**
@@ -237,6 +296,7 @@ public class EmailVerify {
                 .filter(line -> !line.isEmpty()) // Remove empty lines
                 .collect(Collectors.toList());
     }
+
 
     @AfterEach
     public void tearDown() {

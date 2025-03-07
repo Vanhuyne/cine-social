@@ -34,41 +34,48 @@ public class SeleniumIntegrationTest {
 
     @Test
     public void openGoogle() throws InterruptedException {
-        int repeatCount = 10;
-        List<String> listEmail = generateDotTrickEmails("thanvanh.uy.157@gmail.com", repeatCount);
-        for (int i = 0; i < listEmail.size(); i++) {
+        List<String> emails = Arrays.asList(
+                "phaphe@huyne.me",
+                "haha@huyne.me",
+                "phong@huyne.me"
+        );
+        for (int i = 0; i < emails.size(); i++) {
             System.out.println("Starting iteration: " + i);
 
+            // Navigate to the signup URL
             String url = "https://avail.openedu.net/en/signup?next=/en/courses/course-avail-36779?ref_by=";
             String code = "f8cDS8gZorzy4Dgu";
             driver.get(url + code);
 
-            // Create an explicit wait to handle the dynamic loading of elements
+            // Use explicit wait if necessary for page load
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            // For instance, if the Display Name field has an ID of "displayName"
+            // Locate form fields
             WebElement displayNameField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[1]/div/input"));
-
             WebElement emailField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[2]/div/input"));
             WebElement passwordField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[3]/div/div/input"));
             WebElement confirmPasswordField = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/div[4]/div/div/input"));
 
+            // Generate a random username (assuming this method exists in your code)
             String username = this.generateRandomUsername(7);
-            String selectedEmail = listEmail.get(i);
-            // 3. Fill in the fields
+
+            // Get the current email from the list
+            String selectedEmail = emails.get(i);
+
+            // Fill in the form
             displayNameField.sendKeys(username);
             emailField.sendKeys(selectedEmail);
             passwordField.sendKeys("Huy01203055232");
             confirmPasswordField.sendKeys("Huy01203055232");
 
-            // wait 3 seconds
+            // Wait 3 seconds before clicking Sign Up (optional)
             Thread.sleep(3000);
 
-            // 4. Click the Sign Up button
-            // Example: If the sign-up button has an ID of "signUpBtn"
+            // Click the Sign Up button
             WebElement signUpButton = driver.findElement(By.xpath("/html/body/div/div[1]/div/form/button"));
             signUpButton.click();
 
+            // Wait 3 seconds before the next iteration (optional)
             Thread.sleep(3000);
         }
         // Navigate to the specified URL in the incognito window
